@@ -9,7 +9,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import xyz.hurrhnn.discordbot.Main;
-import xyz.hurrhnn.discordbot.SQL;
+import xyz.hurrhnn.discordbot.util.SQL;
 
 import java.awt.*;
 import java.io.*;

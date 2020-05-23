@@ -1,10 +1,11 @@
-package xyz.hurrhnn.discordbot;
+package xyz.hurrhnn.discordbot.util;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.slf4j.LoggerFactory;
+import xyz.hurrhnn.discordbot.EventListener;
 
 import javax.annotation.Nullable;
 import java.sql.*;

@@ -6,20 +6,22 @@ import net.dv8tion.jda.api.entities.MessageHistory;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.exceptions.PermissionException;
 
+import java.util.Collections;
 import java.util.List;
 
 public class CleanChatCommand implements ICmd{
+
     @Override
     public void handle(CmdContext cmdContext) {
-        if (cmdContext.getArgs().size() != 2) return;
+        if (cmdContext.getArgs().size() != 1) return;
 
         TextChannel textChannel = cmdContext.getChannel();
 
         int count;
         try {
-            count = Integer.parseInt(cmdContext.getArgs().get(1));
+            count = Integer.parseInt(cmdContext.getArgs().get(0));
         } catch (Exception e) {
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\nIt's not a number!").build()).queue();
+            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\nError: \"It's not a number!\"```").build()).queue();
             return;
         }
 
@@ -41,7 +43,13 @@ public class CleanChatCommand implements ICmd{
 
     @Override
     public String getHelp() {
-        return "Clean the Chats\n" +
-                "Usage: `!!cc [count]`";
+        return "```diff\n-!!cc [count]\n\n" +
+                "+ Clean the chat neatly.\n" +
+                "+ Only 2 to 99 lines can be cleaned. ```";
+    }
+
+    @Override
+    public List<String> getAliases() {
+        return Collections.singletonList("clean");
     }
 }

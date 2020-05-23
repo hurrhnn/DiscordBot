@@ -1,4 +1,7 @@
-package xyz.hurrhnn.discordbot;
+package xyz.hurrhnn.discordbot.util;
+
+import xyz.hurrhnn.discordbot.Main;
+import xyz.hurrhnn.discordbot.util.SQL;
 
 public class Info {
 

@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import xyz.hurrhnn.discordbot.util.Info;
 
 import javax.annotation.Nonnull;
 
@@ -31,16 +32,4 @@ public class EventListener extends ListenerAdapter {
             handleThread.start();
         }
     }
-}
-
-class HandleThread extends Thread {
-
-    private final GuildMessageReceivedEvent event;
-    private final CommandManager manager = new CommandManager();
-
-    public HandleThread(GuildMessageReceivedEvent event)
-    { this.event = event; }
-
-    public void run()
-    { manager.handle(event); }
 }

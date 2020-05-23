@@ -1,7 +1,7 @@
 package xyz.hurrhnn.discordbot;
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import xyz.hurrhnn.discordbot.CommandManager;
+import xyz.hurrhnn.discordbot.cmd.CommandManager;
 
 public class HandleThread extends Thread {
 

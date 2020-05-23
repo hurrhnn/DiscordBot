@@ -1,8 +1,8 @@
 package xyz.hurrhnn.discordbot.cmd;
 
+        import me.duncte123.botcommons.messaging.EmbedUtils;
         import net.dv8tion.jda.api.entities.TextChannel;
-        import xyz.hurrhnn.discordbot.CommandManager;
-        import xyz.hurrhnn.discordbot.Info;
+        import xyz.hurrhnn.discordbot.util.Info;
 
         import java.util.List;
 
@@ -39,8 +39,7 @@ public class HelpCommand implements ICmd {
             textChannel.sendMessage("Nothing found for " + search).queue();
             return;
         }
-
-        textChannel.sendMessage(cmd.getHelp()).queue();
+        textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Usage for !!" + cmd.getName(), cmd.getHelp()).build()).queue();
     }
 
     @Override
