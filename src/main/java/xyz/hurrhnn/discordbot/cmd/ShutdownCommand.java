@@ -1,17 +1,39 @@
 package xyz.hurrhnn.discordbot.cmd;
 
 import me.duncte123.botcommons.BotCommons;
+import me.duncte123.botcommons.messaging.EmbedUtils;
+import net.dv8tion.jda.api.entities.ApplicationInfo;
+import net.dv8tion.jda.api.entities.TeamMember;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.requests.RestAction;
 import org.slf4j.LoggerFactory;
 import xyz.hurrhnn.discordbot.EventListener;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 public class ShutdownCommand implements ICmd{
     @Override
     public void handle(CmdContext cmdContext) {
-        cmdContext.getChannel().sendMessage("Performing Shutting down...").queue();
-        LoggerFactory.getLogger(EventListener.class).info("Shutting down...");
+        RestAction<ApplicationInfo> applicationInfoRestAction = cmdContext.getJDA().retrieveApplicationInfo();
+        ApplicationInfo applicationInfo = applicationInfoRestAction.complete();
 
-        cmdContext.getJDA().shutdown();
-        BotCommons.shutdown(cmdContext.getJDA());
+        for(TeamMember teamMember : Objects.requireNonNull(applicationInfo.getTeam()).getMembers())
+        {
+            if(teamMember.getUser().getId().equals(cmdContext.getAuthor().getId()))
+            {
+                LoggerFactory.getLogger(EventListener.class).info("Shutting down...");
+                cmdContext.getChannel().sendMessage(EmbedUtils.embedImageWithTitle("\"Performing Shutting down...\"", null, "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Emoji_u1f44b.svg/1200px-Emoji_u1f44b.svg.png").build()).complete();
+                try { Thread.sleep(1000); } catch (InterruptedException e) { e.printStackTrace(); }
+
+                cmdContext.getJDA().shutdown();
+                BotCommons.shutdown(cmdContext.getJDA());
+                System.exit(0);
+                return;
+            }
+        }
+        cmdContext.getChannel().sendMessage("You aren't in my Team!").queue();
     }
 
     @Override
@@ -21,6 +43,13 @@ public class ShutdownCommand implements ICmd{
 
     @Override
     public String getHelp() {
-        return "Shutting down a bot. (Everyone Only)";
+        return "```diff\n+ Usage: !!shutdown\n\n" +
+                "-- Shutting down a bot.\n-- Only those who belong to the bot developers' team are allowed.\n```";
     }
+
+    @Override
+    public List<String> getAliases() { return Collections.singletonList("sh");}
+
+    @Override
+    public void errHandler(Exception e, TextChannel textChannel) { }
 }

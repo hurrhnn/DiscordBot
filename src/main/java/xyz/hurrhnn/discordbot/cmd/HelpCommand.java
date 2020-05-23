@@ -1,10 +1,9 @@
 package xyz.hurrhnn.discordbot.cmd;
 
-        import me.duncte123.botcommons.messaging.EmbedUtils;
-        import net.dv8tion.jda.api.entities.TextChannel;
-        import xyz.hurrhnn.discordbot.util.Info;
-
-        import java.util.List;
+import me.duncte123.botcommons.messaging.EmbedUtils;
+import net.dv8tion.jda.api.entities.TextChannel;
+import xyz.hurrhnn.discordbot.util.Info;
+import java.util.List;
 
 public class HelpCommand implements ICmd {
 
@@ -39,7 +38,7 @@ public class HelpCommand implements ICmd {
             textChannel.sendMessage("Nothing found for " + search).queue();
             return;
         }
-        textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Usage for !!" + cmd.getName(), cmd.getHelp()).build()).queue();
+        textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Usage", cmd.getHelp()).build()).queue();
     }
 
     @Override
@@ -49,7 +48,10 @@ public class HelpCommand implements ICmd {
 
     @Override
     public String getHelp() {
-        return "Shows the list with commands in the bot\n" +
-                    "Usage: `!!help [command]`";
+        return "```diff\n+ Usage: !!help [command]\n" +
+                "-- Shows the list with commands in the bot.\n```";
     }
+
+    @Override
+    public void errHandler(Exception e, TextChannel textChannel) { }
 }

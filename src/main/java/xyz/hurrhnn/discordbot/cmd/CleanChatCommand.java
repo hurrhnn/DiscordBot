@@ -4,52 +4,58 @@ import me.duncte123.botcommons.messaging.EmbedUtils;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageHistory;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.exceptions.PermissionException;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
-public class CleanChatCommand implements ICmd{
+public class CleanChatCommand implements ICmd {
 
     @Override
     public void handle(CmdContext cmdContext) {
-        if (cmdContext.getArgs().size() != 1) return;
 
-        TextChannel textChannel = cmdContext.getChannel();
-
-        int count;
         try {
-            count = Integer.parseInt(cmdContext.getArgs().get(0));
-        } catch (Exception e) {
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\nError: \"It's not a number!\"```").build()).queue();
-            return;
-        }
+            TextChannel textChannel = cmdContext.getChannel();
+            int count = Integer.parseInt(cmdContext.getArgs().get(0));
 
-        MessageHistory messageHistory = new MessageHistory(textChannel);
-        List<Message> messages = messageHistory.retrievePast(count).complete();
-        try {
+            MessageHistory messageHistory = new MessageHistory(textChannel);
+            List<Message> messages = messageHistory.retrievePast(count).complete();
             textChannel.deleteMessages(messages).complete();
-        } catch (PermissionException e) {
-            textChannel.sendMessage("채팅을 지울 수 있는 권한이 없어요!").queue();
-            return;
-        }
-        textChannel.sendMessage(cmdContext.getEvent().getAuthor().getAsTag() + " 유저가 " + count + "개의 메세지를 삭제했습니다.").queue();
+            textChannel.sendMessage(cmdContext.getEvent().getAuthor().getAsTag() + " 유저가 " + count + "개의 메세지를 삭제했습니다.").queue();
+        }catch (Exception e) { errHandler(e, cmdContext.getChannel()); }
     }
 
     @Override
     public String getName() {
-        return "cc";
+        return "clean";
     }
 
     @Override
     public String getHelp() {
-        return "```diff\n-!!cc [count]\n\n" +
-                "+ Clean the chat neatly.\n" +
-                "+ Only 2 to 99 lines can be cleaned. ```";
+        return "```diff\n+ !!clean [count]\n\n" +
+                "-- Clean the chat neatly.\n" +
+                "-- Only 2 to 99 lines can be cleaned. ```";
     }
 
     @Override
     public List<String> getAliases() {
-        return Collections.singletonList("clean");
+        return Collections.singletonList("cc");
+    }
+
+    @Override
+    public void errHandler(Exception e, TextChannel textChannel) {
+        PrintStream errPrintStream = null;
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try { errPrintStream = new PrintStream(byteArrayOutputStream, true, StandardCharsets.UTF_8.name()); } catch (UnsupportedEncodingException ignored) { }
+        e.printStackTrace(errPrintStream);
+        String error = byteArrayOutputStream.toString().split("\n")[0];
+
+        if(error.contains("NumberFormatException") || error.contains("IndexOutOfBoundsException")) textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + "Error: Please enter a valid number." + "\n```").build()).queue();
+        else if (error.contains("Message retrieval limit")) textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + "Error: Please enter a number from 2 to 99." + "\n```").build()).queue();
+        else if (error.contains("PermissionException")) textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + "Error: The bot doesn't have the authority to delete the chat!" + "\n```").build()).queue();
+        else textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + error + "\n```").build()).queue();
     }
 }

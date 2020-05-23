@@ -4,19 +4,15 @@ import me.duncte123.botcommons.messaging.EmbedUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import xyz.hurrhnn.discordbot.Main;
 import xyz.hurrhnn.discordbot.util.SQL;
 
-import java.awt.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class MemeCommand implements ICmd {
 
@@ -27,14 +23,13 @@ public class MemeCommand implements ICmd {
 
         try {
             URL redditAPI = new URL("https://api.reddit.com/r/" + subReddit + "/random");
-            File tmpFile = new File(System.currentTimeMillis() + ".json");
             HttpURLConnection con = (HttpURLConnection) redditAPI.openConnection();
             con.addRequestProperty("User-agent", "GiveMeMeMe");
             InputStream inputStream = con.getInputStream();
-            FileUtils.copyInputStreamToFile(inputStream, tmpFile);
+            Reader inputStreamReader = new InputStreamReader(inputStream);
 
             JSONParser jParser = new JSONParser();
-            JSONArray rootArray = (JSONArray) jParser.parse(Files.readAllLines(Paths.get(tmpFile.getPath())).get(0));
+            JSONArray rootArray = (JSONArray) jParser.parse(inputStreamReader);
             JSONObject jsonObject = (JSONObject) rootArray.get(0);
             JSONObject dataObject = (JSONObject) jsonObject.get("data");
             JSONArray childArray = (JSONArray) dataObject.get("children");
@@ -63,13 +58,7 @@ public class MemeCommand implements ICmd {
 
             EmbedBuilder embedBuilder = EmbedUtils.embedImageWithTitle(title, url, image);
             textChannel.sendMessage(embedBuilder.build()).queue();
-
-        } catch (Exception e) {
-            EmbedBuilder embedBuilder = new EmbedBuilder();
-            embedBuilder.setColor(Color.RED).setTitle("An error has occurred!").setDescription("```Java\n" + (e.getMessage().equals("https://api.reddit.com/r/" + subReddit + "/random") ? ("Does not exist subReddit \"" + subReddit + "\".") : e.getMessage()) + "\n```");
-            textChannel.sendMessage(embedBuilder.build()).queue();
-            e.printStackTrace();
-        }
+        }catch (Exception e) { errHandler(e, cmdContext.getChannel()); }
     }
 
     public static JSONObject reloadChildData(String subReddit, GuildMessageReceivedEvent event) {
@@ -104,9 +93,7 @@ public class MemeCommand implements ICmd {
             if (!childDataObject.get("url").toString().contains("https://i.redd.it/") || childDataObject.get("title").toString().length() <= 0 || childDataObject.get("permalink").toString().length() <= 0 || isSavedURI) return reloadChildData(subReddit, event);
             else return childDataObject;
 
-        } catch (Exception ignored) {
-            return reloadChildData(subReddit, event);
-        }
+        } catch (Exception ignored) { return reloadChildData(subReddit, event); }
     }
 
     @Override
@@ -116,6 +103,19 @@ public class MemeCommand implements ICmd {
 
     @Override
     public String getHelp() {
-        return "Shows a Random ProgrammingHumor from reddit";
+        return "```diff\n+ Usage: !!meme\n" +
+                "-- Show a Random ProgrammingHumor from reddit.\n```";
+    }
+
+    @Override
+    public void errHandler(Exception e, TextChannel textChannel)
+    {
+        StringBuilder errString = new StringBuilder();
+        for(StackTraceElement stackTraceElement : e.getStackTrace())
+        {
+            errString.append(stackTraceElement.toString()).append("\n");
+        }
+
+        textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + errString.toString() + "\n```").build()).queue();
     }
 }
