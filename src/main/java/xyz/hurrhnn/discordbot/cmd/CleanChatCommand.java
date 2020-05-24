@@ -24,7 +24,8 @@ public class CleanChatCommand implements ICmd {
             MessageHistory messageHistory = new MessageHistory(textChannel);
             List<Message> messages = messageHistory.retrievePast(count).complete();
             textChannel.deleteMessages(messages).complete();
-            textChannel.sendMessage(cmdContext.getEvent().getAuthor().getAsTag() + " 유저가 " + count + "개의 메세지를 삭제했습니다.").queue();
+            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Wipe - Deleted " + count + (count == 1 ? " Message!" : " Messages!"), null).setFooter("Requested by " + cmdContext.getEvent().getAuthor().getAsTag(), cmdContext.getEvent().getAuthor().getAvatarUrl()).build()).queue();
+
         }catch (Exception e) { errHandler(e, cmdContext.getChannel()); }
     }
 

@@ -8,7 +8,7 @@ import java.util.List;
 public interface ICmd {
     void handle(CmdContext cmdContext);
 
-    void errHandler(Exception e, TextChannel textChannel);
+    default void errHandler(Exception e, TextChannel textChannel) { e.printStackTrace(); }
 
     String getName();
 
