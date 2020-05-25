@@ -9,6 +9,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 public class DebugCommand implements ICmd {
@@ -34,7 +36,6 @@ public class DebugCommand implements ICmd {
 
     @Override
     public void handle(CmdContext cmdContext) {
-
         RestAction<ApplicationInfo> applicationInfoRestAction = cmdContext.getJDA().retrieveApplicationInfo();
         ApplicationInfo applicationInfo = applicationInfoRestAction.complete();
         for (TeamMember teamMember : Objects.requireNonNull(applicationInfo.getTeam()).getMembers()) {
@@ -85,7 +86,9 @@ public class DebugCommand implements ICmd {
         } catch (UnsupportedEncodingException ignored) {
         }
         e.printStackTrace(errPrintStream);
-
         textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + err.toString().split("\n")[0] + "\n```").build()).queue();
+    }
+    public List<String> getAliases() {
+        return Collections.singletonList("eval");
     }
 }
