@@ -8,6 +8,8 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.requests.RestAction;
 import org.slf4j.LoggerFactory;
 import xyz.hurrhnn.discordbot.EventListener;
+import xyz.hurrhnn.discordbot.Main;
+import xyz.hurrhnn.discordbot.util.SQL;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,12 +27,13 @@ public class ShutdownCommand implements ICmd{
             {
                 LoggerFactory.getLogger(EventListener.class).info("Shutting down...");
                 cmdContext.getChannel().sendMessage(EmbedUtils.embedImageWithTitle("\"Performing Shutting down...\"", null, "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Emoji_u1f44b.svg/1200px-Emoji_u1f44b.svg.png").build()).complete();
+
                 try { Thread.sleep(1000); } catch (InterruptedException e) { e.printStackTrace(); }
 
+                SQL.finSQLConnection(Main.con);
                 cmdContext.getJDA().shutdown();
                 BotCommons.shutdown(cmdContext.getJDA());
                 System.exit(0);
-                return;
             }
         }
         cmdContext.getChannel().sendMessage("You aren't in my Team!").queue();
