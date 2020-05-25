@@ -26,7 +26,6 @@ public class SQL {
             LoggerFactory.getLogger(EventListener.class).error("<JDBC 오류> Driver load 오류: {}", e.getMessage());
         }
         try {
-            DriverManager.setLoginTimeout(0x7fffffff);
             connection = DriverManager.getConnection("jdbc:mysql://" + server + "/" + database + "?autoReconnect=true", user_name, password);
         } catch (SQLException e) {
             System.err.println("SQL 연결 오류! 프로그램을 종료합니다!");
@@ -39,7 +38,7 @@ public class SQL {
     public static String[] getSQLData(Connection connection, String table, String column, @Nullable GuildMessageReceivedEvent event) {
 
         try {
-            String query = "select * from " + table + ";";
+            String query = "select * from " + table;
             Statement statement = connection.createStatement();
             ResultSet result = statement.executeQuery(query);
 
@@ -71,15 +70,15 @@ public class SQL {
         }
     }
 
-    public static void dropSQLData(Connection connection, String table, String column, String value, GuildMessageReceivedEvent event) {
-
-        try {
-            Statement statement = connection.createStatement();
-            statement.executeUpdate("delete from " + table + " where " + column + "='" + value + "';");
-        } catch (Exception e) {
-            errSQLConnection(e.getMessage(), event);
-        }
-    }
+//    public static void dropSQLData(Connection connection, String table, String column, String value, GuildMessageReceivedEvent event) {
+//
+//        try {
+//            Statement statement = connection.createStatement();
+//            statement.executeUpdate("delete from " + table + " where " + column + "='" + value + "';");
+//        } catch (Exception e) {
+//            errSQLConnection(e.getMessage(), event);
+//        }
+//    }
 
     public static void errSQLConnection(String errMessage, GuildMessageReceivedEvent event) {
         TextChannel textChannel = event.getChannel();
