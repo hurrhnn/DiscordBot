@@ -1,8 +1,7 @@
 package xyz.hurrhnn.discordbot.cmd;
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import xyz.hurrhnn.discordbot.Main;
-import xyz.hurrhnn.discordbot.util.SQL;
+import xyz.hurrhnn.discordbot.util.Info;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,7 +48,7 @@ public class CommandManager extends Thread{
     public void handle(GuildMessageReceivedEvent event)
     {
         String[] split = event.getMessage().getContentRaw()
-                .replaceFirst("(?i)" + Pattern.quote(SQL.getSQLData(Main.con, "info", "prefix", event)[0]), "")
+                .replaceFirst("(?i)" + Pattern.quote(Info.getPrefix(event)), "")
                 .split("\\s+");
 
         String invoke = split[0].toLowerCase();
