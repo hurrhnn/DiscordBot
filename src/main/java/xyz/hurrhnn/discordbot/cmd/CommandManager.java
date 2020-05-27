@@ -18,6 +18,7 @@ public class CommandManager extends Thread{
         addCommand(new PingCommand());
         addCommand(new ShutdownCommand());
         addCommand(new HelpCommand(this));
+        addCommand(new MusicCommand());
     }
 
     private void addCommand(ICmd cmd) {
