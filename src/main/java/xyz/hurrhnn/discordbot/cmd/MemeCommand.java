@@ -20,25 +20,12 @@ public class MemeCommand implements ICmd {
     public void handle(CmdContext cmdContext) {
         final TextChannel textChannel = cmdContext.getChannel();
         String subReddit = "ProgrammerHumor";
-
         try {
-            URL redditAPI = new URL("https://api.reddit.com/r/" + subReddit + "/random");
-            HttpURLConnection con = (HttpURLConnection) redditAPI.openConnection();
-            con.addRequestProperty("User-agent", "GiveMeMeMe");
-            InputStream inputStream = con.getInputStream();
-            Reader inputStreamReader = new InputStreamReader(inputStream);
-
-            JSONParser jParser = new JSONParser();
-            JSONArray rootArray = (JSONArray) jParser.parse(inputStreamReader);
-            JSONObject jsonObject = (JSONObject) rootArray.get(0);
-            JSONObject dataObject = (JSONObject) jsonObject.get("data");
-            JSONArray childArray = (JSONArray) dataObject.get("children");
-            JSONObject childObject = (JSONObject) childArray.get(0);
-            JSONObject childDataObject = (JSONObject) childObject.get("data");
-
+            JSONObject childDataObject = retrieveAndParseJSON(subReddit);
             boolean isSavedURI = false;
             String[] memeLink = SQL.getSQLData(Main.con, "saved_meme", "meme_link", cmdContext.getEvent());
             String[] guildIndex = SQL.getSQLData(Main.con, "saved_meme", "guild_id", cmdContext.getEvent());
+
             for(int i = 0; i < guildIndex.length; i++)
             {
                 if(memeLink[i].equals(childDataObject.get("url").toString()) && guildIndex[i].equals(cmdContext.getGuild().getId()))
@@ -61,26 +48,31 @@ public class MemeCommand implements ICmd {
         }catch (Exception e) { errHandler(e, cmdContext.getChannel()); }
     }
 
-    public static JSONObject reloadChildData(String subReddit, GuildMessageReceivedEvent event) {
+    public JSONObject retrieveAndParseJSON(String subReddit) throws Exception {
+        URL redditAPI = new URL("https://api.reddit.com/r/" + subReddit + "/random");
+        HttpURLConnection con = (HttpURLConnection) redditAPI.openConnection();
+        con.addRequestProperty("User-agent", "GiveMeMeMe");
+        InputStream inputStream = con.getInputStream();
+        Reader inputStreamReader = new InputStreamReader(inputStream);
 
+        JSONParser jParser = new JSONParser();
+        JSONArray rootArray = (JSONArray) jParser.parse(inputStreamReader);
+        JSONObject jsonObject = (JSONObject) rootArray.get(0);
+        JSONObject dataObject = (JSONObject) jsonObject.get("data");
+        JSONArray childArray = (JSONArray) dataObject.get("children");
+        JSONObject childObject = (JSONObject) childArray.get(0);
+
+        return (JSONObject) childObject.get("data");
+    }
+
+
+    public JSONObject reloadChildData(String subReddit, GuildMessageReceivedEvent event) {
         try {
-            URL redditAPI = new URL("https://api.reddit.com/r/" + subReddit + "/random");
-            HttpURLConnection con = (HttpURLConnection) redditAPI.openConnection();
-            con.addRequestProperty("User-agent", "GiveMeMeMe");
-            InputStream inputStream = con.getInputStream();
-            Reader inputStreamReader = new InputStreamReader(inputStream);
-
-            JSONParser jParser = new JSONParser();
-            JSONArray rootArray = (JSONArray) jParser.parse(inputStreamReader);
-            JSONObject jsonObject = (JSONObject) rootArray.get(0);
-            JSONObject dataObject = (JSONObject) jsonObject.get("data");
-            JSONArray childArray = (JSONArray) dataObject.get("children");
-            JSONObject childObject = (JSONObject) childArray.get(0);
-            JSONObject childDataObject = (JSONObject) childObject.get("data");
-
+            JSONObject childDataObject = retrieveAndParseJSON(subReddit);
             boolean isSavedURI = false;
             String[] memeLink = SQL.getSQLData(Main.con, "saved_meme", "meme_link", event);
             String[] guildIndex = SQL.getSQLData(Main.con, "saved_meme", "guild_id", event);
+
             for(int i = 0; i < guildIndex.length; i++)
             {
                 if(memeLink[i].equals(childDataObject.get("url").toString()) && guildIndex[i].equals(event.getGuild().getId()))
@@ -104,18 +96,14 @@ public class MemeCommand implements ICmd {
     @Override
     public String getHelp() {
         return "```diff\n+ Usage: !!meme\n" +
-                "-- Show a Random ProgrammingHumor from reddit.\n```";
+                "-- Show a random ProgrammingHumor from reddit.\n```";
     }
 
     @Override
     public void errHandler(Exception e, TextChannel textChannel)
     {
         StringBuilder errString = new StringBuilder();
-        for(StackTraceElement stackTraceElement : e.getStackTrace())
-        {
-            errString.append(stackTraceElement.toString()).append("\n");
-        }
-
+        for(StackTraceElement stackTraceElement : e.getStackTrace()) { errString.append(stackTraceElement.toString()).append("\n"); }
         textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + errString.toString() + "\n```").build()).queue();
     }
 }
