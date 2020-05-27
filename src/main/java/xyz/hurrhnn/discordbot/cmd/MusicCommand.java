@@ -15,9 +15,7 @@ import xyz.hurrhnn.discordbot.cmd.music.PlayCommand;
 import xyz.hurrhnn.discordbot.cmd.music.PlayerManager;
 import xyz.hurrhnn.discordbot.cmd.music.TrackScheduler;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class MusicCommand implements ICmd {
@@ -25,9 +23,9 @@ public class MusicCommand implements ICmd {
     @Override
     public void handle(CmdContext cmdContext) {
 
-        List<String> argsList = cmdContext.getArgs();
+        ArrayList<String> argsList = new ArrayList<>(cmdContext.getArgs());
         argsList.add(0, "!!music");
-        String[] args = (String[]) argsList.toArray();
+        String[] args = argsList.toArray(new String[0]);
 
         GuildMessageReceivedEvent event = cmdContext.getEvent();
         Guild guild = event.getGuild();
