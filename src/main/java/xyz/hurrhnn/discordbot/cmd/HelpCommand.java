@@ -35,7 +35,7 @@ public class HelpCommand implements ICmd {
 
         if(cmd == null)
         {
-            textChannel.sendMessage("Nothing found for " + search).queue();
+            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "Nothing found for " + search).build()).queue();
             return;
         }
         textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Usage", cmd.getHelp()).build()).queue();
@@ -51,7 +51,4 @@ public class HelpCommand implements ICmd {
         return "```diff\n+ Usage: !!help [command]\n" +
                 "-- Shows the list with commands in the bot.\n```";
     }
-
-    @Override
-    public void errHandler(Exception e, TextChannel textChannel) { }
 }

@@ -36,7 +36,7 @@ public class ShutdownCommand implements ICmd{
                 System.exit(0);
             }
         }
-        cmdContext.getChannel().sendMessage("You aren't in my Team!").queue();
+        cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Oops", "You are not authorized to execute this command!").build()).queue();
     }
 
     @Override
