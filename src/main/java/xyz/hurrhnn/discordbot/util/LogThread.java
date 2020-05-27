@@ -5,7 +5,9 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.slf4j.Logger;
 import xyz.hurrhnn.discordbot.Main;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.sql.PreparedStatement;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
@@ -26,16 +28,19 @@ public class LogThread extends Thread {
     }
 
     public void run() {
-        List<String> chat = Collections.singletonList(raw);
-        List<Message.Attachment> attachmentList = event.getMessage().getAttachments();
+        try {
+            List<String> chat = Collections.singletonList(raw);
+            List<Message.Attachment> attachmentList = event.getMessage().getAttachments();
 
-        Date date = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        dateFormat.format(date);
+            Date date = new Date();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            dateFormat.format(date);
 
-        if (!event.getMessage().getAttachments().isEmpty()) {
-            for (int i = 0; i < attachmentList.size(); i++) {
-                try {
+            if (!event.getMessage().getAttachments().isEmpty()) {
+                for (int i = 0; i < attachmentList.size(); i++) {
+                    LOGGER.info("[CHAT] [{}][{}][{}]: {}", event.getGuild().getName(), event.getChannel().getName(), event.getAuthor().getAsTag(), raw);
+
+                    PreparedStatement prepareStatement = Main.con.prepareStatement("insert into log values (?, ?, ?)");
                     Message.Attachment attachment = attachmentList.get(i);
                     InputStream inputStream = attachment.retrieveInputStream().get();
 
@@ -46,28 +51,24 @@ public class LogThread extends Thread {
                     byteArrayOutputStream.close();
 
                     ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-                    PreparedStatement prepareStatement = Main.con.prepareStatement("insert into log values (?, ?, ?)");
-                    prepareStatement.setString(1, chat.get(i).isEmpty() ? "(ATTACHMENT_ONLY)" : MessageFormat.format("{0} [{1}] INFO - {2} [CHAT][{2}][{3}][{4}][{5}]: {6}", dateFormat.format(date), currentThread().getName(), getClass().getSimpleName(), event.getGuild().getName(), event.getChannel().getName(), event.getAuthor().getAsTag(), raw));
+                    prepareStatement.setString(1, chat.size() < i ? "(ATTACHMENT_ONLY)" : MessageFormat.format("{0} [{1}] INFO - {2} [CHAT][{2}][{3}][{4}][{5}]: {6}", dateFormat.format(date), currentThread().getName(), getClass().getSimpleName(), event.getGuild().getName(), event.getChannel().getName(), event.getAuthor().getAsTag(), raw));
                     prepareStatement.setString(2, attachment.getFileName());
                     prepareStatement.setBinaryStream(3, byteArrayInputStream, byteArrayOutputStream.size());
                     prepareStatement.executeUpdate();
                     prepareStatement.close();
-                } catch (Exception e) {
-                    SQL.errSQLConnection(e.getMessage(), event);
                 }
-            }
-        } else {
-            try {
+            } else {
+                LOGGER.info("[CHAT] [{}][{}][{}]: {}", event.getGuild().getName(), event.getChannel().getName(), event.getAuthor().getAsTag(), raw);
+
                 PreparedStatement prepareStatement = Main.con.prepareStatement("insert into log values (?, ?, ?)");
                 prepareStatement.setString(1, MessageFormat.format("{0} [{1}] INFO - {2} [CHAT][{2}][{3}][{4}][{5}]: {6}", dateFormat.format(date), currentThread().getName(), getClass().getSimpleName(), event.getGuild().getName(), event.getChannel().getName(), event.getAuthor().getAsTag(), raw));
                 prepareStatement.setString(2, null);
                 prepareStatement.setBinaryStream(3, null);
                 prepareStatement.executeUpdate();
                 prepareStatement.close();
-            } catch (Exception e) {
-                SQL.errSQLConnection(e.getMessage(), event);
             }
+        } catch (Exception e) {
+            SQL.errSQLConnection(e.getMessage(), event);
         }
-        LOGGER.info("[CHAT] [{}][{}][{}]: {}", event.getGuild().getName(), event.getChannel().getName(), event.getAuthor().getAsTag(), raw);
     }
 }
