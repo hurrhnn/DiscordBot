@@ -53,14 +53,16 @@ public class SQL {
         return null;
     }
 
-    public static void insertSQLData(Connection connection, String table, String[] datas, GuildMessageReceivedEvent event) {
+    public static void insertSQLData(Connection connection, String table, String[] data, GuildMessageReceivedEvent event) {
 
         try {
+            for(int i = 0; i < data.length; i++) data[i] = data[i].replace("'", "''").replace("\"", "\"\"");
+
             Statement statement = connection.createStatement();
             StringBuilder query = new StringBuilder("insert into " + table + " values(");
 
-            for (String data : datas) {
-                query.append("'").append(data).append("', ");
+            for (String value : data) {
+                query.append("'").append(value).append("', ");
             }
             query.deleteCharAt(query.length() - 1).deleteCharAt(query.length() - 1).append(")");
             statement.executeUpdate(query.toString());
