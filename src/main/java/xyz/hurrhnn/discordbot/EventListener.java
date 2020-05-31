@@ -1,5 +1,6 @@
 package xyz.hurrhnn.discordbot;
 
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -18,20 +19,29 @@ public class EventListener extends ListenerAdapter {
     @Override
     public void onReady(@Nonnull ReadyEvent event) {
         LOGGER.info("{} Bot version {} Started! ", event.getJDA().getSelfUser().getName(), Info.getVersion());
+        new Thread(() -> {
+            while (true){
+                try {
+                    event.getJDA().getPresence().setActivity(Activity.playing("?prefix"));
+                    Thread.sleep(5000);
+                    event.getJDA().getPresence().setActivity(Activity.watching("鬼滅の刃"));
+                    Thread.sleep(5000);
+                } catch (InterruptedException ignored) { }
+            }
+        }).start();
     }
 
     @Override
-    public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event){
+    public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
         User user = event.getAuthor();
-        if(user.isBot() || event.isWebhookMessage()) return;
+        if (user.isBot() || event.isWebhookMessage()) return;
         String raw = event.getMessage().getContentRaw();
 
         Thread logThread = new LogThread(event, LOGGER);
         logThread.setName("LogThread-" + ++Info.logThreadCount);
         logThread.start();
 
-        if(raw.startsWith(Info.getPrefix(event)))
-        {
+        if (raw.startsWith("?") || raw.startsWith(Info.getPrefix(event))) {
             Thread handleThread = new HandleThread(event);
             handleThread.start();
         }
