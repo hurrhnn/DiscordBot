@@ -63,7 +63,7 @@ public class DebugCommand implements ICmd {
                 return;
             }
         }
-        cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Oops", "You are not authorized to execute this command!").build()).queue();
+        cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Oops", "```\nYou are not authorized to execute this command!\n```").build()).queue();
     }
 
     @Override
