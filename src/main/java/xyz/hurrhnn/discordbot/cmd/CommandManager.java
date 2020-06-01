@@ -20,6 +20,7 @@ public class CommandManager extends Thread{
         addCommand(new ShutdownCommand());
         addCommand(new HelpCommand(this));
         addCommand(new MusicCommand());
+        addCommand(new PrefixCommand());
     }
 
     private void addCommand(ICmd cmd) {

@@ -13,7 +13,5 @@ public class Info {
         return getPrefix(event);
     }
 
-    //public static String getOwnerId(GuildMessageReceivedEvent event) { return event.getJDA().retrieveApplicationInfo().complete().getOwner().getId(); }
-
     public static String getVersion() { return SQL.getSQLData(Main.con, "info", "version", null)[0]; }
 }
