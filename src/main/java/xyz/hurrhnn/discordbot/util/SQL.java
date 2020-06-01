@@ -47,7 +47,7 @@ public class SQL {
             return resultSum.toString().split("\u200B");
 
         } catch (Exception e) {
-            if(event != null) errSQLConnection(e.getMessage(), event);
+            if (event != null) errSQLConnection(e.getMessage(), event);
             else System.err.println(e.getMessage());
         }
         return null;
@@ -56,7 +56,7 @@ public class SQL {
     public static void insertSQLData(Connection connection, String table, String[] data, GuildMessageReceivedEvent event) {
 
         try {
-            for(int i = 0; i < data.length; i++) data[i] = data[i].replace("'", "''").replace("\"", "\"\"");
+            for (int i = 0; i < data.length; i++) data[i] = data[i].replace("'", "''").replace("\"", "\"\"");
 
             Statement statement = connection.createStatement();
             StringBuilder query = new StringBuilder("insert into " + table + " values(");
@@ -67,6 +67,16 @@ public class SQL {
             query.deleteCharAt(query.length() - 1).deleteCharAt(query.length() - 1).append(")");
             statement.executeUpdate(query.toString());
 
+        } catch (Exception e) {
+            errSQLConnection(e.getMessage(), event);
+        }
+    }
+
+    public static void updateSQLData(Connection connection, String table, String column, String columnValue, String condition, String conditionValue, GuildMessageReceivedEvent event) {
+
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("update " + table + " set " + column + " = '" + columnValue.replace("'", "''").replace("\"", "\"\"") + "' where " + condition + " = '" + conditionValue.replace("'", "''").replace("\"", "\"\"") + "'");
         } catch (Exception e) {
             errSQLConnection(e.getMessage(), event);
         }
@@ -97,11 +107,10 @@ public class SQL {
         textChannel.sendMessage(embedBuilder.build()).queue();
     }
 
-    public static void finSQLConnection(Connection connection)
-    {
+    public static void finSQLConnection(Connection connection) {
         try {
-            if(connection != null)
+            if (connection != null)
                 connection.close();
-        } catch (SQLException ignored) {}
+        } catch (SQLException ignored) { }
     }
 }
