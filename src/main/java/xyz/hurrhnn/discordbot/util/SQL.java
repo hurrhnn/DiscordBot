@@ -8,31 +8,77 @@ import org.slf4j.LoggerFactory;
 import xyz.hurrhnn.discordbot.EventListener;
 
 import javax.annotation.Nullable;
+import java.io.*;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.sql.*;
+import java.util.Base64;
 
 public class SQL {
 
     public static Connection initSQLConnection(String database) {
-        Connection connection = null;
 
-        String server = "hurrhnn.xyz";
-        String user_name = "MySQLuser";
-        String password = "hurrhnn0516!";
+        Connection connection = null;
+        String server = "", userName = "", password = "";
+
+        try {
+            server = getSQLServerInfo("server");
+            userName = getSQLServerInfo("userName");
+            password = getSQLServerInfo("password");
+        }catch (IOException e) {
+            System.out.println("Can't connect Secure Server. Exit.");
+            System.exit(1);
+        }
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
-            System.err.println("<JDBC 오류> Driver load 오류: " + e.getMessage());
-            LoggerFactory.getLogger(EventListener.class).error("<JDBC 오류> Driver load 오류: {}", e.getMessage());
+            System.err.println("<JDBC Error> Driver load error: " + e.getMessage());
+            LoggerFactory.getLogger(EventListener.class).error("<JDBC Error> Driver load error: {}", e.getMessage());
         }
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://" + server + "/" + database + "?autoReconnect=true", user_name, password);
+            connection = DriverManager.getConnection("jdbc:mysql://" + server + "/" + database + "?validationQuery=\"select 1\"", userName, password);
         } catch (SQLException e) {
-            System.err.println("SQL 연결 오류! 프로그램을 종료합니다!");
-            LoggerFactory.getLogger(EventListener.class).error("SQL 연결 오류! 프로그램을 종료합니다!");
+            System.err.println("SQL Connection error. Program Exit.");
+            LoggerFactory.getLogger(EventListener.class).error("SQL Connection error. Program Exit.");
             System.exit(0);
         }
         return connection;
+    }
+
+    private static String getSQLServerInfo(String value) throws IOException {
+
+        String addrSecureServer = new String(Base64.getDecoder().decode("aHVycmhubi54eXo="));
+        Socket socket = new Socket();
+        socket.connect(new InetSocketAddress(addrSecureServer, 516));
+
+        InputStream input = socket.getInputStream();
+        BufferedReader socketReader = new BufferedReader(new InputStreamReader(input));
+        PrintWriter printWriter = new PrintWriter(socket.getOutputStream(), true);
+
+        switch (value) {
+            case "server":
+                printWriter.println("server");
+
+                value = socketReader.readLine();
+                for(int i = 0; i < 5; i++) value = new String(Base64.getDecoder().decode(value));
+                return value;
+
+            case "userName":
+                printWriter.println("userName");
+
+                value = socketReader.readLine();
+                for(int i = 0; i < 5; i++) value = new String(Base64.getDecoder().decode(value));
+                return value;
+
+            case "password":
+                printWriter.println("password");
+
+                value = socketReader.readLine();
+                for(int i = 0; i < 5; i++) value = new String(Base64.getDecoder().decode(value));
+                return value;
+        }
+        return null;
     }
 
     public static String[] getSQLData(Connection connection, String table, String column, @Nullable GuildMessageReceivedEvent event) {
