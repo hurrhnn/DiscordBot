@@ -11,6 +11,7 @@ import xyz.hurrhnn.discordbot.util.Info;
 import xyz.hurrhnn.discordbot.util.LogThread;
 
 import javax.annotation.Nonnull;
+import java.io.File;
 
 public class EventListener extends ListenerAdapter {
 
@@ -37,6 +38,8 @@ public class EventListener extends ListenerAdapter {
         if (user.isBot() || event.isWebhookMessage()) return;
         String raw = event.getMessage().getContentRaw();
 
+        if(raw.contains("<@!345473282654470146>") || raw.contains("<@345473282654470146>")) event.getChannel().sendFile(new File("isOwnerMentioned.png")).queue();
+        if(raw.contains("@everyone")) event.getChannel().sendFile(new File("isEveryoneMentioned.png")).queue();
         Thread logThread = new LogThread(event, LOGGER);
         logThread.setName("LogThread-" + ++Info.logThreadCount);
         logThread.start();
