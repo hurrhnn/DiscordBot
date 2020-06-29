@@ -4,6 +4,8 @@
 build/
 out/
 .env
+access*
+*.png
 
 # Ignore Gradle build output directory
 build
