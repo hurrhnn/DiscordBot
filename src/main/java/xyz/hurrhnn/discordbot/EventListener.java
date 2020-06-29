@@ -7,11 +7,11 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import xyz.hurrhnn.discordbot.cmd.MiscellaneousCommand;
 import xyz.hurrhnn.discordbot.util.Info;
-import xyz.hurrhnn.discordbot.util.LogThread;
+import xyz.hurrhnn.discordbot.util.LogCounter;
 
 import javax.annotation.Nonnull;
-import java.io.File;
 
 public class EventListener extends ListenerAdapter {
 
@@ -38,11 +38,11 @@ public class EventListener extends ListenerAdapter {
         if (user.isBot() || event.isWebhookMessage()) return;
         String raw = event.getMessage().getContentRaw();
 
-        if(raw.contains("<@!345473282654470146>") || raw.contains("<@345473282654470146>")) event.getChannel().sendFile(new File("isOwnerMentioned.png")).queue();
-        if(raw.contains("@everyone")) event.getChannel().sendFile(new File("isEveryoneMentioned.png")).queue();
-        Thread logThread = new LogThread(event, LOGGER);
-        logThread.setName("LogThread-" + ++Info.logThreadCount);
-        logThread.start();
+        Thread logCounter = new LogCounter(event, LOGGER);
+        logCounter.setName("LogCounter-" + ++Info.logThreadCount);
+        logCounter.start();
+
+        new MiscellaneousCommand(event, raw);
 
         if (raw.startsWith("?") || raw.startsWith(Info.getPrefix(event))) {
             Thread handleThread = new HandleThread(event);
