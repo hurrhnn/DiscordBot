@@ -15,13 +15,13 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class LogThread extends Thread {
+public class LogCounter extends Thread {
 
     private final Logger LOGGER;
     private final GuildMessageReceivedEvent event;
     private final String raw;
 
-    public LogThread(GuildMessageReceivedEvent event, Logger LOGGER) {
+    public LogCounter(GuildMessageReceivedEvent event, Logger LOGGER) {
         this.event = event;
         this.raw = (!event.getMessage().getContentRaw().isEmpty() ? (!event.getMessage().getAttachments().isEmpty() ? (event.getMessage().getContentRaw().replace("\n", " ") + " (FILE_ATTACHMENT)") : (event.getMessage().getContentRaw().replace("\n", " "))) : (!event.getMessage().getAttachments().isEmpty() ? ("(FILE_ATTACHMENT)") : ("(EMPTY_MESSAGE)")));
         this.LOGGER = LOGGER;
