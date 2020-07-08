@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import xyz.hurrhnn.discordbot.cmd.MiscellaneousCommand;
+import xyz.hurrhnn.discordbot.cmd.MiscellaneousFeature;
 import xyz.hurrhnn.discordbot.util.Info;
 import xyz.hurrhnn.discordbot.util.LogCounter;
 
@@ -20,16 +20,6 @@ public class EventListener extends ListenerAdapter {
     @Override
     public void onReady(@Nonnull ReadyEvent event) {
         LOGGER.info("{} Bot version {} Started! ", event.getJDA().getSelfUser().getName(), Info.getVersion());
-        new Thread(() -> {
-            while (true){
-                try {
-                    event.getJDA().getPresence().setActivity(Activity.playing("?prefix"));
-                    Thread.sleep(5000);
-                    event.getJDA().getPresence().setActivity(Activity.watching("鬼滅の刃"));
-                    Thread.sleep(5000);
-                } catch (InterruptedException ignored) { }
-            }
-        }).start();
     }
 
     @Override
@@ -42,7 +32,7 @@ public class EventListener extends ListenerAdapter {
         logCounter.setName("LogCounter-" + ++Info.logThreadCount);
         logCounter.start();
 
-        new MiscellaneousCommand(event, raw);
+        new MiscellaneousFeature(event, raw);
 
         if (raw.startsWith("?") || raw.startsWith(Info.getPrefix(event))) {
             Thread handleThread = new HandleThread(event);
