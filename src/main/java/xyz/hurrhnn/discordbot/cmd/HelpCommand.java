@@ -15,7 +15,8 @@ public class HelpCommand implements ICmd {
 
     @Override
     public void handle(CmdContext cmdContext) {
-        List<String> args = cmdContext.getArgs();
+        List<String> args;
+        args = cmdContext.getArgs();
         TextChannel textChannel = cmdContext.getChannel();
 
         if(args.isEmpty())
@@ -35,7 +36,7 @@ public class HelpCommand implements ICmd {
 
         if(cmd == null)
         {
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "Nothing found for " + search).build()).queue();
+            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Nothing found for " + search + "```").build()).queue();
             return;
         }
         textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Usage", cmd.getHelp()).build()).queue();

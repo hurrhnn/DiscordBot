@@ -1,9 +1,11 @@
 package xyz.hurrhnn.discordbot.cmd;
 
 import me.duncte123.botcommons.messaging.EmbedUtils;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import xyz.hurrhnn.discordbot.util.Info;
 import javax.annotation.Nullable;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -50,6 +52,13 @@ public class CommandManager extends Thread{
 
     public void handle(GuildMessageReceivedEvent event)
     {
+
+        EmbedUtils.setEmbedBuilder(
+                () -> new EmbedBuilder()
+                        .setColor(Color.YELLOW)
+                        .setFooter("Requested By " + event.getAuthor().getAsTag(), event.getAuthor().getAvatarUrl())
+        );
+
         if(event.getMessage().getContentRaw().equals("?prefix")) event.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Prefix", "```CSS\nThe prefix ZENITSU bot uses on this server: " + Info.getPrefix(event) + "\n```").build()).queue();
 
         String[] split = event.getMessage().getContentRaw()
