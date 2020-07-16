@@ -17,15 +17,19 @@ public class CleanChatCommand implements ICmd {
     @Override
     public void handle(CmdContext cmdContext) {
 
-        try {
-            TextChannel textChannel = cmdContext.getChannel();
-            int count = Integer.parseInt(cmdContext.getArgs().get(0));
+        TextChannel textChannel = cmdContext.getChannel();
 
+        if(isArgsEmpty(cmdContext.getArgs())) {
+            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("CleanChat", getHelp()).build()).queue();
+            return;
+        }
+
+        try {
+            int count = Integer.parseInt(cmdContext.getArgs().get(0));
             MessageHistory messageHistory = new MessageHistory(textChannel);
             List<Message> messages = messageHistory.retrievePast(count).complete();
             textChannel.deleteMessages(messages).complete();
             textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Wipe - Deleted " + count + (count == 1 ? " Message!" : " Messages!"), null).setFooter("Requested by " + cmdContext.getEvent().getAuthor().getAsTag(), cmdContext.getEvent().getAuthor().getAvatarUrl()).build()).queue();
-
         }catch (Exception e) { errHandler(e, cmdContext.getChannel()); }
     }
 
@@ -56,7 +60,7 @@ public class CleanChatCommand implements ICmd {
 
         if(error.contains("NumberFormatException") || error.contains("IndexOutOfBoundsException")) textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + "Error: Please enter a valid number." + "\n```").build()).queue();
         else if (error.contains("Message retrieval limit")) textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + "Error: Please enter a number from 2 to 99." + "\n```").build()).queue();
-        else if (error.contains("PermissionException")) textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + "Error: The bot doesn't have the authority to delete the chat!" + "\n```").build()).queue();
+        else if (error.contains("PermissionException")) textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + "Error: The bot does NOT have the authority to delete the chat!" + "\n```").build()).queue();
         else textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + error + "\n```").build()).queue();
     }
 }
