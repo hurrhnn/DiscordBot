@@ -16,10 +16,10 @@ public class TrackScheduler extends AudioEventAdapter {
     public BlockingQueue<AudioTrack> queue;
 
     /**
-     * @param _player The audio player this scheduler uses
+     * @param player The audio player this scheduler uses
      */
-    public TrackScheduler(AudioPlayer _player) {
-        player = _player;
+    public TrackScheduler(AudioPlayer player) {
+        this.player = player;
         queue = new LinkedBlockingQueue<>();
     }
 
@@ -57,7 +57,6 @@ public class TrackScheduler extends AudioEventAdapter {
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
         // Only start the next track if the end reason is suitable for it (FINISHED or LOAD_FAILED)
-
         if (endReason.mayStartNext) {
             nextTrack();
         }
