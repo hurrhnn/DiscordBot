@@ -17,4 +17,6 @@ public interface ICmd {
     default List<String> getAliases() {
         return Collections.emptyList();
     }
+
+    default boolean isArgsEmpty(List<String> args) { return args.isEmpty(); }
 }
