@@ -59,7 +59,7 @@ public class CommandManager extends Thread{
                         .setFooter("Requested By " + event.getAuthor().getAsTag(), event.getAuthor().getAvatarUrl())
         );
 
-        if(event.getMessage().getContentRaw().equals("?prefix")) event.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Prefix", "```CSS\nThe prefix ZENITSU bot uses on this server: " + Info.getPrefix(event) + "\n```").build()).queue();
+        if(event.getMessage().getContentRaw().equals("?prefix")) event.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Prefix", "The prefix " + event.getJDA().getSelfUser().getName() + " bot uses on this server: `" + Info.getPrefix(event)+"`").build()).queue();
 
         String[] split = event.getMessage().getContentRaw()
                 .replaceFirst("(?i)" + Pattern.quote(Info.getPrefix(event)), "")
