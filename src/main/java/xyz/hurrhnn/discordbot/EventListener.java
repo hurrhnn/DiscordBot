@@ -11,6 +11,7 @@ import xyz.hurrhnn.discordbot.util.Info;
 import xyz.hurrhnn.discordbot.util.LogCounter;
 
 import javax.annotation.Nonnull;
+import static xyz.hurrhnn.discordbot.util.Info.logThreadCount;
 
 public class EventListener extends ListenerAdapter {
 
@@ -28,7 +29,8 @@ public class EventListener extends ListenerAdapter {
         String raw = event.getMessage().getContentRaw();
 
         Thread logCounter = new LogCounter(event, LOGGER);
-        logCounter.setName("LogCounter-" + ++Info.logThreadCount);
+
+        logCounter.setName("LogCounter-" + ++logThreadCount);
         logCounter.start();
 
         new MiscellaneousFeature(event, raw);
