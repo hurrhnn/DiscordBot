@@ -1,5 +1,6 @@
 package xyz.hurrhnn.discordbot.cmd.music;
 
+import com.sedmelluq.discord.lavaplayer.player.AudioConfiguration;
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
@@ -7,6 +8,7 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import me.duncte123.botcommons.messaging.EmbedUtils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -21,6 +23,10 @@ public class PlayerManager {
     private PlayerManager() {
         this.musicManagers = new HashMap<>();
         this.playerManager = new DefaultAudioPlayerManager();
+
+        playerManager.getConfiguration().setResamplingQuality(AudioConfiguration.ResamplingQuality.HIGH);
+        playerManager.getConfiguration().setOpusEncodingQuality(AudioConfiguration.OPUS_QUALITY_MAX);
+
         AudioSourceManagers.registerRemoteSources(playerManager);
         AudioSourceManagers.registerLocalSource(playerManager);
     }
@@ -39,13 +45,13 @@ public class PlayerManager {
         return musicManager;
     }
 
-    public void loadAndPlay(TextChannel channel, String trackUrl, String mp3Name) {
+    public void loadAndPlay(TextChannel channel, String trackUrl, String ytThumbnail, String mp3Name) {
         GuildMusicManager musicManager = getGuildMusicManager(channel.getGuild());
         playerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-                if(mp3Name != null) channel.sendMessage("\"" + mp3Name + "\"이 대기열에 추가됨!").queue();
-                else channel.sendMessage("\"" + track.getInfo().title + "\"이 대기열에 추가됨!").queue();
+                if(mp3Name != null) channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - play!", "\"" + mp3Name + "\"\nwas successfully added to queue.").build()).queue();
+                else channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - play!", "[" + track.getInfo().title + "](" + trackUrl + ")\nadded to queue.").setThumbnail(ytThumbnail).build()).queue();
                 play(musicManager, track);
             }
 
