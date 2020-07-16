@@ -29,7 +29,7 @@ public class Main {
         builder.setToken(SQL.getSQLData(con, "info", "token", null)[0]);
         try {
                      builder.setAutoReconnect(true)
-                    .setActivity(Activity.watching("鬼滅の刃"))
+                    .setActivity(Activity.playing("Homan transition maneuver"))
                     .addEventListeners(new EventListener())
                     .build();
         } catch (LoginException e) {
