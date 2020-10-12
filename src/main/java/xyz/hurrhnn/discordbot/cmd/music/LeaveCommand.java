@@ -25,7 +25,7 @@ public class LeaveCommand implements ICmd {
             textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - leave!", "```E: You cannot disconnect the bot's voice channel because you are not connected to the voice channel.```").build()).queue();
             return;
         }
-        GuildMusicInfo.isGuildSkipRequestDelayed.put(textChannel.getId(), false);
+        GuildMusicInfo.SetIsGuildSkipRequestDelayedMap(textChannel.getId(), false);
 
         cmdContext.getGuild().getAudioManager().closeAudioConnection();
         textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - leave!", "```Disconnected to the voice channel.```").build()).queue();

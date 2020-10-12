@@ -17,10 +17,10 @@ public class StopCommand implements ICmd {
             return;
         }
 
-        GuildMusicManager musicManager = PlayerManager.getInstance().getGuildMusicManager(cmdContext.getGuild());
+        GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(cmdContext.getGuild());
         musicManager.scheduler.getQueue().clear();
-        musicManager.player.stopTrack();
-        musicManager.player.setPaused(false);
+        musicManager.scheduler.player.stopTrack();
+        musicManager.scheduler.player.setPaused(false);
         cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - Stop!", "Stop the music and clear the queue.").build()).queue();
     }
 

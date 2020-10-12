@@ -30,7 +30,7 @@ public class MusicHelpCommand implements ICmd {
 
             manager.getCommands().stream().map(ICmd::getName).forEach((it) -> stringBuilder.append("`").append(Info.getPrefix(cmdContext.getEvent())).append(it).append("`, "));
 
-            textChannel.get().sendMessage(stringBuilder.toString().substring(0, stringBuilder.length() - 2)).queue();
+            textChannel.get().sendMessage(stringBuilder.substring(0, stringBuilder.length() - 2)).queue();
             return;
         }
 

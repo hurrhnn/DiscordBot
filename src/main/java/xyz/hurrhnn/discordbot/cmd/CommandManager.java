@@ -3,6 +3,7 @@ package xyz.hurrhnn.discordbot.cmd;
 import me.duncte123.botcommons.messaging.EmbedUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import xyz.hurrhnn.discordbot.cmd.server.ServerCommand;
 import xyz.hurrhnn.discordbot.util.Info;
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -23,6 +24,7 @@ public class CommandManager extends Thread{
         addCommand(new HelpCommand(this));
         addCommand(new MusicCommand());
         addCommand(new PrefixCommand());
+        addCommand(new ServerCommand());
     }
 
     private void addCommand(ICmd cmd) {

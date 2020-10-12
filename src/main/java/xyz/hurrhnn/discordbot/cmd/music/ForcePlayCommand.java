@@ -14,14 +14,14 @@ public class ForcePlayCommand implements ICmd {
     public void handle(CmdContext cmdContext) {
 
         TextChannel textChannel = cmdContext.getChannel();
-        GuildMusicManager musicManager = PlayerManager.getInstance().getGuildMusicManager(cmdContext.getGuild());
+        GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(cmdContext.getGuild());
 
         if(isArgsEmpty(cmdContext.getArgs())) {
             textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Force_play!", getHelp()).build()).queue();
             return;
         }
 
-        if (musicManager.player.getPlayingTrack() == null) {
+        if (musicManager.scheduler.player.getPlayingTrack() == null) {
             textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Force_play!", "```E: There are no songs in the queue to play.```").build()).queue();
             return;
         }
@@ -30,8 +30,8 @@ public class ForcePlayCommand implements ICmd {
             if (strArgs.equalsIgnoreCase(audioTrack.getInfo().title) || audioTrack.getInfo().title.toLowerCase().contains(strArgs)) {
                 textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Force_play!", "Skip existing music and play: \n" + "[" + audioTrack.getInfo().title + "](" + audioTrack.getInfo().uri + ")").build()).queue();
                 musicManager.scheduler.getQueue().remove(audioTrack);
-                musicManager.player.startTrack(audioTrack, false);
-                return;
+                musicManager.scheduler.player.startTrack(audioTrack, false);
+                return;                 
             }
         }
     }

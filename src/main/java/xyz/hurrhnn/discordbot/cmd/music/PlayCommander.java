@@ -30,41 +30,46 @@ public class PlayCommander {
                     JacksonFactory.getDefaultInstance(),
                     null
             )
-                    .setApplicationName("ZENITSU Discord Bot")
+                    .setApplicationName("JDA4 Discord Bot")
                     .build();
         } catch (Exception ignored) { }
         youTube = temp;
-        System.out.println(args);
         handle(args, event, mp3Name);
     }
 
     public void handle(List<String> args, GuildMessageReceivedEvent event, String mp3Name) {
 
         TextChannel channel = event.getChannel();
-
         StringBuilder input = new StringBuilder();
 
-        for (String arg : args) input.append(arg).append(" ");
+        for(int i = 0; i < args.toArray().length; i++)
+        {
+            if(i == 0 && !(args.toArray()[0].toString().contains("&list=")))
+            {
+                input.append(args.toArray()[i].toString().replace("http://", "").replace("https://", "")).append(" ");
+                continue;
+            }
+            input.append(args.toArray()[i]).append(" ");
+        }
 
-        if (!isUrl(input.toString())) {
+        if(!isURL(input.toString().trim()))
+        {
             String ytSearched = searchYoutube(input.toString(), event);
-
             if (ytSearched == null) {
-                channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - play!", "```E: No results were found on YouTube.``").build()).queue();
+                channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - play!", "```E: No results were found on YouTube.```").build()).queue();
                 return;
             }
             input = new StringBuilder(ytSearched);
         }
-
         PlayerManager manager = PlayerManager.getInstance();
         final int beginIndex = input.toString().trim().indexOf(',');
-        if(beginIndex == -1) manager.loadAndPlay(event.getChannel(), input.toString().trim(), null ,mp3Name);
+        if(beginIndex == -1) manager.loadAndPlay(event.getChannel(), input.toString().trim(), null, mp3Name);
         else manager.loadAndPlay(event.getChannel(), input.toString().trim().substring(0, beginIndex), input.toString().trim().substring(beginIndex + 1) ,mp3Name);
     }
 
-    private boolean isUrl(String input) {
+    private boolean isURL(String URL) {
         try {
-            new URL(input);
+            new URL(URL);
             return true;
         } catch (MalformedURLException ignored) {
             return false;

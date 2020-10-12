@@ -14,13 +14,12 @@ public class ShuffleCommand implements ICmd {
     @Override
     public void handle(CmdContext cmdContext) {
 
-        TrackScheduler scheduler = PlayerManager.getInstance().getGuildMusicManager(cmdContext.getGuild()).scheduler;
+        TrackScheduler scheduler = PlayerManager.getInstance().getMusicManager(cmdContext.getGuild()).scheduler;
 
         LinkedList<AudioTrack> audioTracks = new LinkedList<>(scheduler.getQueue());
         Collections.shuffle(audioTracks);
         scheduler.queue = Queues.newLinkedBlockingQueue(audioTracks);
         cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - Shuffle!", "```Successfully shuffled " + scheduler.queue.size() + " queued songs.```").build()).queue();
-
     }
 
     @Override

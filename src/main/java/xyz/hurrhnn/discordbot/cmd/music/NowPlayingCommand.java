@@ -13,15 +13,15 @@ public class NowPlayingCommand implements ICmd {
     @Override
     public void handle(CmdContext cmdContext) {
         PlayerManager playerManager = PlayerManager.getInstance();
-        GuildMusicManager musicManager = playerManager.getGuildMusicManager(cmdContext.getGuild());
+        GuildMusicManager musicManager = playerManager.getMusicManager(cmdContext.getGuild());
 
-        if (musicManager.player.getPlayingTrack() == null) {
+        if (musicManager.scheduler.player.getPlayingTrack() == null) {
             cmdContext.getChannel().sendMessage("아무 것도 재생 되어 있지 않습니다.").queue();
             return;
         }
-        AudioTrackInfo info = musicManager.player.getPlayingTrack().getInfo();
+        AudioTrackInfo info = musicManager.scheduler.player.getPlayingTrack().getInfo();
 
-        cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle(!musicManager.player.isPaused() ? "재생 중: [" + info.title + "]" : "일시 정지됨: [" + info.title + "]", musicManager.player.isPaused() ? formatTime(musicManager.player.getPlayingTrack().getPosition()) + " \u23F8 " + formatTime(musicManager.player.getPlayingTrack().getDuration()) : formatTime(musicManager.player.getPlayingTrack().getPosition()) + " ▶ " + formatTime(musicManager.player.getPlayingTrack().getDuration())).build()).queue();
+        cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle(!musicManager.scheduler.player.isPaused() ? "재생 중: [" + info.title + "]" : "일시 정지됨: [" + info.title + "]", musicManager.scheduler.player.isPaused() ? formatTime(musicManager.scheduler.player.getPlayingTrack().getPosition()) + " \u23F8 " + formatTime(musicManager.scheduler.player.getPlayingTrack().getDuration()) : formatTime(musicManager.scheduler.player.getPlayingTrack().getPosition()) + " ▶ " + formatTime(musicManager.scheduler.player.getPlayingTrack().getDuration())).build()).queue();
     }
 
     public String formatTime(long timeInMillis) {

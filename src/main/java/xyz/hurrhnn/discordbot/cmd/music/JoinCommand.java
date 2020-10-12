@@ -36,13 +36,13 @@ public class JoinCommand implements ICmd {
 
         if (hasBotPermissionToConnectToVoiceChannel(voiceChannel, cmdContext.getSelfMember())) {
 
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - join!", "```E: The bot doesn't have permission to connect to the voice channel. Please check if you have permission to connect the bot's voice.```").build()).queue();
+            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - join!", "```E: The bot doesn't have permission to connect to the voice channel. Please check if you have permission to connect the voice.```").build()).queue();
             return;
         }
-        GuildMusicInfo.isGuildSkipRequestDelayed.put(textChannel.getId(), false);
+        GuildMusicInfo.SetIsGuildSkipRequestDelayedMap(textChannel.getId(), false);
         cmdContext.getGuild().getAudioManager().openAudioConnection(voiceChannel);
 
-        PlayerManager.getInstance().getGuildMusicManager(cmdContext.getGuild()).player.setVolume(80);
+        PlayerManager.getInstance().getMusicManager(cmdContext.getGuild()).scheduler.player.setVolume(80);
         textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - join!", "```Connected to the voice channel.```").build()).queue();
 
     }

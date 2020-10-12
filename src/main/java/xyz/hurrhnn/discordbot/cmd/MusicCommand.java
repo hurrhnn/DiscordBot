@@ -50,8 +50,8 @@ public class MusicCommand implements ICmd {
 
         if (args[1].equalsIgnoreCase("queue") || args[1].equalsIgnoreCase("q")) {
             playerManager = PlayerManager.getInstance();
-            musicManager = playerManager.getGuildMusicManager(event.getGuild());
-            player = musicManager.player;
+            musicManager = playerManager.getMusicManager(event.getGuild());
+            player = musicManager.scheduler.player;
 
             if (args.length > 2) {
                 if (args[2].equalsIgnoreCase("remove") || args[2].equalsIgnoreCase("r")) {
@@ -142,21 +142,16 @@ public class MusicCommand implements ICmd {
                                 break;
                             }
                         }
-                        if (tmp.toString().equals("")) return;
+                        if (tmp.toString().equals(""))
+                        {
+                            textChannel.sendMessage("현재 대기중인 음악이 없습니다!").queue();
+                            return;
+                        }
                         textChannel.sendMessage(tmp.toString()).queue();
                         textChannel.sendMessage("현재 플레이어의 재생 목록은 " + ((musicManager.scheduler.getQueue().size() / 10) + 1) + "개의 페이지가 있습니다.").queue();
                     }
                 }
             }
-        } else if (args[1].equalsIgnoreCase("volume") | args[1].equalsIgnoreCase("v")) {
-            if (args.length != 3) return;
-            playerManager = PlayerManager.getInstance();
-            musicManager = playerManager.getGuildMusicManager(event.getGuild());
-            player = musicManager.player;
-            if (Integer.parseInt(args[2]) > 0 && Integer.parseInt(args[2]) < 101) {
-                player.setVolume(Integer.parseInt(args[2]));
-                textChannel.sendMessage("플레이어의 볼륨이 " + Integer.parseInt(args[2]) + "으로 설정되었습니다.").queue();
-            } else textChannel.sendMessage("볼륨이 너무 크거나 작습니다.").queue();
         }
     }
 

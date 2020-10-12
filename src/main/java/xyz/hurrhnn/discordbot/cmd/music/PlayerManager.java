@@ -13,64 +13,56 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PlayerManager {
     private static PlayerManager INSTANCE;
-    private final AudioPlayerManager playerManager;
+    private final AudioPlayerManager audioPlayerManager;
     private final Map<Long, GuildMusicManager> musicManagers;
 
     private PlayerManager() {
         this.musicManagers = new HashMap<>();
-        this.playerManager = new DefaultAudioPlayerManager();
+        this.audioPlayerManager = new DefaultAudioPlayerManager();
 
-        playerManager.getConfiguration().setResamplingQuality(AudioConfiguration.ResamplingQuality.HIGH);
-        playerManager.getConfiguration().setOpusEncodingQuality(AudioConfiguration.OPUS_QUALITY_MAX);
+        this.audioPlayerManager.getConfiguration().setResamplingQuality(AudioConfiguration.ResamplingQuality.HIGH);
+        this.audioPlayerManager.getConfiguration().setOpusEncodingQuality(AudioConfiguration.OPUS_QUALITY_MAX);
 
-        AudioSourceManagers.registerRemoteSources(playerManager);
-        AudioSourceManagers.registerLocalSource(playerManager);
+        AudioSourceManagers.registerRemoteSources(this.audioPlayerManager);
+        AudioSourceManagers.registerLocalSource(this.audioPlayerManager);
     }
 
-    public synchronized GuildMusicManager getGuildMusicManager(Guild guild) {
-        long guildId = guild.getIdLong();
-        GuildMusicManager musicManager = musicManagers.get(guildId);
+    public GuildMusicManager getMusicManager(Guild guild) {
+        return this.musicManagers.computeIfAbsent(guild.getIdLong(), (guildId) -> {
+            final GuildMusicManager guildMusicManager = new GuildMusicManager(this.audioPlayerManager);
 
-        if (musicManager == null) {
-            musicManager = new GuildMusicManager(playerManager);
-            musicManagers.put(guildId, musicManager);
-        }
+            guild.getAudioManager().setSendingHandler(guildMusicManager.getSendHandler());
 
-        guild.getAudioManager().setSendingHandler(musicManager.getSendHandler());
-
-        return musicManager;
+            return guildMusicManager;
+        });
     }
 
-    public void loadAndPlay(TextChannel channel, String trackUrl, String ytThumbnail, String mp3Name) {
-        GuildMusicManager musicManager = getGuildMusicManager(channel.getGuild());
-        playerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
+        public void loadAndPlay(TextChannel channel, String trackUrl, String ytThumbnail, String mp3Name) {
+        final GuildMusicManager musicManager = this.getMusicManager(channel.getGuild());
+
+        this.audioPlayerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
                 if(mp3Name != null) channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - play!", "\"" + mp3Name + "\"\nwas successfully added to queue.").build()).queue();
                 else channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - play!", "[" + track.getInfo().title + "](" + trackUrl + ")\nadded to queue.").setThumbnail(ytThumbnail).build()).queue();
-                play(musicManager, track);
+                musicManager.scheduler.queue(track);
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
-                AudioTrack firstTrack = playlist.getSelectedTrack();
+                final List<AudioTrack> tracks = playlist.getTracks();
+                //channel.sendMessage("\"" + firstTrack.getInfo().title + "\"이 대기열에 추가됨!" + " (첫 번째 곡 : " + playlist.getName() + ")").queue();
+                channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - play!", "[" + playlist.getName() + "](" + playlist.getTracks().get(0).getInfo().uri + ")\nadded to queue.").setThumbnail("https://i.ytimg.com/vi/" + trackUrl.substring(trackUrl.trim().indexOf("watch?v="), trackUrl.trim().indexOf('&')).replace("watch?v=", "") + "/0.jpg").build()).queue();
 
-                if (firstTrack == null) {
-                    firstTrack = playlist.getTracks().remove(0);
-                }
-
-                channel.sendMessage("\"" + firstTrack.getInfo().title + "\"이 대기열에 추가됨!" + " (첫 번째 곡 : " + playlist.getName() + ")").queue();
-
-                play(musicManager, firstTrack);
-
-                playlist.getTracks().forEach(musicManager.scheduler::queue);
+                for (final AudioTrack track : tracks) musicManager.scheduler.queue(track);
             }
 
-            @Override
+            @Override 
             public void noMatches() {
                 channel.sendMessage("영상을 찾을 수 없어요.. " + trackUrl).queue();
             }
@@ -82,11 +74,7 @@ public class PlayerManager {
         });
     }
 
-    private void play(GuildMusicManager musicManager, AudioTrack track) {
-        musicManager.scheduler.queue(track);
-    }
-
-    public static synchronized PlayerManager getInstance() {
+    public static PlayerManager getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new PlayerManager();
         }

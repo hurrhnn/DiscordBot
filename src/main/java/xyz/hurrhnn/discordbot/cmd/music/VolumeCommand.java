@@ -14,7 +14,7 @@ public class VolumeCommand implements ICmd {
     public void handle(CmdContext cmdContext) {
 
         TextChannel textChannel = cmdContext.getChannel();
-        AudioPlayer audioPlayer = PlayerManager.getInstance().getGuildMusicManager(cmdContext.getGuild()).player;
+        AudioPlayer audioPlayer = PlayerManager.getInstance().getMusicManager(cmdContext.getGuild()).scheduler.player;
 
         if(isArgsEmpty(cmdContext.getArgs()))
             textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Volume", "Current Volume: " + audioPlayer.getVolume()).build()).queue();
