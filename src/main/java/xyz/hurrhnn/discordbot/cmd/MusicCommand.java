@@ -155,22 +155,6 @@ public class MusicCommand implements ICmd {
         }
     }
 
-    /* public boolean isVoiceChannelConnected(AudioManager audioManager) {
-        return audioManager.isConnected();
-    }
-
-     public boolean isAuthorVoiceChannelConnected(GuildVoiceState memberVoiceState) {
-        return memberVoiceState != null && memberVoiceState.inVoiceChannel();
-    }
-
-    public boolean isAuthorVoiceChannelConnectedWithBot(VoiceChannel voiceChannel, Member member) {
-        return voiceChannel != null && !voiceChannel.getMembers().contains(member);
-    }
-
-    public boolean hasBotPermissionToConnectToVoiceChannel(VoiceChannel voiceChannel, Member selfMember) {
-        return voiceChannel != null && !selfMember.hasPermission(voiceChannel, Permission.VOICE_CONNECT);
-    } */
-
     @Override
     public void errHandler(Exception e, TextChannel textChannel) {
 
