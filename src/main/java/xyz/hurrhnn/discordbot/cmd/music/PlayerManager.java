@@ -56,7 +56,6 @@ public class PlayerManager {
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
                 final List<AudioTrack> tracks = playlist.getTracks();
-                //channel.sendMessage("\"" + firstTrack.getInfo().title + "\"이 대기열에 추가됨!" + " (첫 번째 곡 : " + playlist.getName() + ")").queue();
                 channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - play!", "[" + playlist.getName() + "](" + playlist.getTracks().get(0).getInfo().uri + ")\nadded to queue.").setThumbnail("https://i.ytimg.com/vi/" + trackUrl.substring(trackUrl.trim().indexOf("watch?v="), trackUrl.trim().indexOf('&')).replace("watch?v=", "") + "/0.jpg").build()).queue();
 
                 for (final AudioTrack track : tracks) musicManager.scheduler.queue(track);
@@ -64,12 +63,12 @@ public class PlayerManager {
 
             @Override 
             public void noMatches() {
-                channel.sendMessage("영상을 찾을 수 없어요.. " + trackUrl).queue();
+                channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - play!", "```E: Unable to play - No matches found on Youtube." + trackUrl + "```").build()).queue();
             }
 
             @Override
             public void loadFailed(FriendlyException exception) {
-                channel.sendMessage("재생 불가: " + exception.getMessage()).queue();
+                channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - play!", "```E: Unable to play - " + exception.getMessage() + "```").build()).queue();
             }
         });
     }

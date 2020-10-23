@@ -16,12 +16,12 @@ public class NowPlayingCommand implements ICmd {
         GuildMusicManager musicManager = playerManager.getMusicManager(cmdContext.getGuild());
 
         if (musicManager.scheduler.player.getPlayingTrack() == null) {
-            cmdContext.getChannel().sendMessage("아무 것도 재생 되어 있지 않습니다.").queue();
+            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - NowPlaying!", "```E: Nothing is playing.```").build()).queue();
             return;
         }
         AudioTrackInfo info = musicManager.scheduler.player.getPlayingTrack().getInfo();
 
-        cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle(!musicManager.scheduler.player.isPaused() ? "재생 중: [" + info.title + "]" : "일시 정지됨: [" + info.title + "]", musicManager.scheduler.player.isPaused() ? formatTime(musicManager.scheduler.player.getPlayingTrack().getPosition()) + " \u23F8 " + formatTime(musicManager.scheduler.player.getPlayingTrack().getDuration()) : formatTime(musicManager.scheduler.player.getPlayingTrack().getPosition()) + " ▶ " + formatTime(musicManager.scheduler.player.getPlayingTrack().getDuration())).build()).queue();
+        cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle(!musicManager.scheduler.player.isPaused() ? "Now Playing: [" + info.title + "]" : "Paused: [" + info.title + "]", musicManager.scheduler.player.isPaused() ? formatTime(musicManager.scheduler.player.getPlayingTrack().getPosition()) + " \u23F8 " + formatTime(musicManager.scheduler.player.getPlayingTrack().getDuration()) : formatTime(musicManager.scheduler.player.getPlayingTrack().getPosition()) + " ▶ " + formatTime(musicManager.scheduler.player.getPlayingTrack().getDuration())).build()).queue();
     }
 
     public String formatTime(long timeInMillis) {

@@ -1,5 +1,6 @@
 package xyz.hurrhnn.discordbot.cmd.music;
 
+import me.duncte123.botcommons.messaging.EmbedUtils;
 import xyz.hurrhnn.discordbot.cmd.CmdContext;
 import xyz.hurrhnn.discordbot.cmd.ICmd;
 
@@ -10,8 +11,8 @@ public class PauseCommand implements ICmd {
 
         if (!musicManager.scheduler.player.isPaused()) {
             musicManager.scheduler.player.setPaused(true);
-            cmdContext.getChannel().sendMessage("플레이어를 일시정지 합니다.").queue();
-        } else cmdContext.getChannel().sendMessage("플레이어가 이미 일시정지 되어 있습니다.").queue();
+            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - pause!", "Pause the Player.").build()).queue();
+        } else cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - pause!", "```E: Player is already paused.```").build()).queue();
     }
 
     @Override
