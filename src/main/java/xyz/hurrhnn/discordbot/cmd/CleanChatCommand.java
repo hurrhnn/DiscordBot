@@ -42,7 +42,7 @@ public class CleanChatCommand implements ICmd {
     public String getHelp() {
         return "```diff\n+ !!clean [count]\n\n" +
                 "-- Clean the chat neatly.\n" +
-                "-- Only 2 to 99 lines can be cleaned. ```";
+                "-- Only 2 to 100 lines can be cleaned. ```";
     }
 
     @Override
