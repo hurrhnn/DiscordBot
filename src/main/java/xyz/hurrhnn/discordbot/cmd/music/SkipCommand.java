@@ -40,7 +40,7 @@ public class SkipCommand implements ICmd {
             return;
         }
 
-        MessageAction messageAction = textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Skip!", "```fix\nShall we skip " + musicManager.scheduler.player.getPlayingTrack().getInfo().title + "?```").build());
+        MessageAction messageAction = textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Skip!", "Skip\n[" + musicManager.scheduler.player.getPlayingTrack().getInfo().title + "](" + musicManager.scheduler.player.getPlayingTrack().getInfo().uri + "?)").build());
         Message embedMessage = messageAction.complete();
         String embedMessageID = embedMessage.getId();
         embedMessage.addReaction("U+2B55").complete();
@@ -65,14 +65,14 @@ public class SkipCommand implements ICmd {
                     break;
             }
         }
-        if (O == X && O + X == 0) textChannel.sendMessage("투표한 사람이 없습니다. 노래는 스킵되지 않습니다!").queue();
-        else if (O == X) textChannel.sendMessage("의견이 분분하네요! 노래는 스킵되지 않습니다!").queue();
+        if (O == X && O + X == 0) textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Skip", "No one voted. The song will not be skipped.").build()).queue();
+        else if (O == X) textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Skip", "There's a lot of course! The song will not be skipped.").build()).queue();
         else if (O > X) {
             textChannel.sendMessage(musicManager.scheduler.player.getPlayingTrack().getInfo().title + "을 스킵합니다!").queue();
             musicManager.scheduler.player.setPaused(true);
             musicManager.scheduler.nextTrack();
             musicManager.scheduler.player.setPaused(false);
-        } else textChannel.sendMessage("스킵하지 말자는 의견이 많군요! 노래를 스킵하지 않습니다!").queue();
+        } else textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Skip", "There are many opinions that we shouldn't skip it! Cancel skipping the song.").build()).queue();
         GuildMusicInfo.SetIsGuildSkipRequestDelayedMap(textChannel.getId(), false);
     }
 
