@@ -25,6 +25,13 @@ public class ForcePlayCommand implements ICmd {
             textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Force_play!", "```E: There are no songs in the queue to play.```").build()).queue();
             return;
         }
+
+        if(musicManager.scheduler.isLoopQueue)
+        {
+            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - skip", "```E: Loop mode is set on the player.```").build()).queue();
+            return;
+        }
+
         for (AudioTrack audioTrack : musicManager.scheduler.getQueue()) {
             String strArgs = String.join(" ", cmdContext.getArgs().toArray(new String[0])).toLowerCase();
             if (strArgs.equalsIgnoreCase(audioTrack.getInfo().title) || audioTrack.getInfo().title.toLowerCase().contains(strArgs)) {
