@@ -22,7 +22,7 @@ public class ShuffleCommand implements ICmd {
         LinkedList<AudioTrack> audioTracks = new LinkedList<>(scheduler.getQueue());
         Collections.shuffle(audioTracks);
         scheduler.queue = Queues.newLinkedBlockingQueue(audioTracks);
-        cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - shuffle", "Successfully shuffled " + scheduler.queue.size() + " queued songs.").build()).queue();
+        cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - shuffle", "Successfully shuffle " + scheduler.queue.size() + " queued songs.").build()).queue();
     }
 
     @Override
