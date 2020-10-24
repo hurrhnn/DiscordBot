@@ -8,10 +8,7 @@ public class GuildMusicInfo {
 
     public static void SetIsGuildSkipRequestDelayedMap(String guildId, Boolean isGuildSkipRequestDelayed)
     {
-
         isGuildSkipRequestDelayedMap.remove(guildId);
         isGuildSkipRequestDelayedMap.put(guildId, isGuildSkipRequestDelayed);
     }
-
-    // public static Map<String, Boolean> isGuildSetRepeatMusic = new HashMap<>();
 }
