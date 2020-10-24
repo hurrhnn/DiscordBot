@@ -36,14 +36,14 @@ public class JoinCommand implements ICmd {
 
         if (hasBotPermissionToConnectToVoiceChannel(voiceChannel, cmdContext.getSelfMember())) {
 
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - join!", "```E: The bot doesn't have permission to connect to the voice channel. Please check if you have permission to connect the voice.```").build()).queue();
+            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - join", "```E: The bot doesn't have permission to connect to the voice channel. Please check if you have permission to connect the voice.```").build()).queue();
             return;
         }
         GuildMusicInfo.SetIsGuildSkipRequestDelayedMap(textChannel.getId(), false);
         cmdContext.getGuild().getAudioManager().openAudioConnection(voiceChannel);
 
         PlayerManager.getInstance().getMusicManager(cmdContext.getGuild()).scheduler.player.setVolume(80);
-        textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - join!", "```Connected to the voice channel.```").build()).queue();
+        textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - join", "```Connected to the voice channel.```").build()).queue();
 
     }
 
@@ -60,7 +60,8 @@ public class JoinCommand implements ICmd {
 
     @Override
     public String getHelp() {
-        return null;
+        return "```diff\n+ Usage: !!music join\n" +
+                "-- Connect the bot to the voice channel with the user who sent the command.\n```";
     }
 
     @Override

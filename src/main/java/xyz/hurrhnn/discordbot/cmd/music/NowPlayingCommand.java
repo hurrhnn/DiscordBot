@@ -16,7 +16,7 @@ public class NowPlayingCommand implements ICmd {
         GuildMusicManager musicManager = playerManager.getMusicManager(cmdContext.getGuild());
 
         if (musicManager.scheduler.player.getPlayingTrack() == null) {
-            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - NowPlaying!", "```E: Nothing is playing.```").build()).queue();
+            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - nowPlaying", "```E: Nothing is playing.```").build()).queue();
             return;
         }
         AudioTrackInfo info = musicManager.scheduler.player.getPlayingTrack().getInfo();
@@ -39,7 +39,8 @@ public class NowPlayingCommand implements ICmd {
 
     @Override
     public String getHelp() {
-        return null;
+        return "```diff\n+ Usage: !!music nowPlaying\n" +
+                "-- Displays the music information currently playing.\n```";
     }
 
     @Override

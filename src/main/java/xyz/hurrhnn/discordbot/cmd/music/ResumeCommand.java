@@ -10,8 +10,8 @@ public class ResumeCommand implements ICmd {
         GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(cmdContext.getGuild());
         if (musicManager.scheduler.player.isPaused()) {
             musicManager.scheduler.player.setPaused(false);
-            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - resume!", "Play the Player again.").build()).queue();
-        } else cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - resume!", "Player is already playing.").build()).queue();
+            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - resume", "Resume the player.").build()).queue();
+        } else cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - resume", "Player is already playing.").build()).queue();
     }
 
     @Override
@@ -21,6 +21,7 @@ public class ResumeCommand implements ICmd {
 
     @Override
     public String getHelp() {
-        return null;
+        return "```diff\n+ Usage: !!music resume\n" +
+                "-- Resume the music player.\n```";
     }
 }
