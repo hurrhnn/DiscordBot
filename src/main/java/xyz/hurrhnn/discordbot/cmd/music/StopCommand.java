@@ -13,7 +13,7 @@ public class StopCommand implements ICmd {
     @Override
     public void handle(CmdContext cmdContext) {
         if (!isAuthorAdministrator(cmdContext.getMember())) {
-            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - Stop!", "E: You cannot reset the music queue because you are not the administrator of this server.").build()).queue();
+            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - stop", "E: You cannot reset the music queue because you are not the administrator of this server.").build()).queue();
             return;
         }
 
@@ -21,7 +21,7 @@ public class StopCommand implements ICmd {
         musicManager.scheduler.getQueue().clear();
         musicManager.scheduler.player.stopTrack();
         musicManager.scheduler.player.setPaused(false);
-        cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - Stop!", "Stop the music and clear the queue.").build()).queue();
+        cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - stop", "Stop the music and clear the queue.").build()).queue();
     }
 
     public boolean isAuthorAdministrator(Member member) {

@@ -142,11 +142,6 @@ public class MusicCommand implements ICmd {
                                 break;
                             }
                         }
-                        if (tmp.toString().equals(""))
-                        {
-                            textChannel.sendMessage("현재 대기중인 음악이 없습니다!").queue();
-                            return;
-                        }
                         textChannel.sendMessage(tmp.toString()).queue();
                         textChannel.sendMessage("현재 플레이어의 재생 목록은 " + ((musicManager.scheduler.getQueue().size() / 10) + 1) + "개의 페이지가 있습니다.").queue();
                     }
