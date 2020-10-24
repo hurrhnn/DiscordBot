@@ -26,6 +26,7 @@ public class MusicCommandManager extends Thread{
         addCommand(new PauseCommand());
         addCommand(new ResumeCommand());
         addCommand(new VolumeCommand());
+        addCommand(new LoopCommand());
     }
 
     private void addCommand(ICmd cmd) {
