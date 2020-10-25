@@ -19,7 +19,7 @@ public class SkipCommand implements ICmd {
         GuildMusicManager musicManager = playerManager.getMusicManager(cmdContext.getGuild());
 
         if (musicManager.scheduler.player.getPlayingTrack() == null) {
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - skip", "```E: There are no songs in the queue to play.```").build()).queue();
+            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - skip", "```E: There are no songs in the queue to skip.```").build()).queue();
             return;
         }
 
@@ -75,6 +75,8 @@ public class SkipCommand implements ICmd {
         else if (O == X) textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - skip", "There's a lot of course! The song will not be skipped.").build()).queue();
         else if (O > X) {
             textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - skip", "Skipped\n[" + musicManager.scheduler.player.getPlayingTrack().getInfo().title + "](" + musicManager.scheduler.player.getPlayingTrack().getInfo().uri + ") by the vote.").build()).queue();
+            musicManager.scheduler.nextTrack();
+            GuildMusicInfo.SetIsGuildSkipRequestDelayedMap(textChannel.getId(), false);
         } else textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - skip", "There are many opinions that we shouldn't skip it! Cancel skipping the song.").build()).queue();
         GuildMusicInfo.SetIsGuildSkipRequestDelayedMap(textChannel.getId(), false);
     }

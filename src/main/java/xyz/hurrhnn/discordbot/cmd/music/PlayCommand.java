@@ -18,18 +18,18 @@ public class PlayCommand implements ICmd {
         TextChannel textChannel = cmdContext.getChannel();
 
         if(isArgsEmpty(cmdContext.getArgs())) {
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Play!", getHelp()).build()).queue();
+            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - play", getHelp()).build()).queue();
             return;
         }
 
         if (!isVoiceChannelConnected(cmdContext.getGuild().getAudioManager())) {
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - play!", "```E: The bot is NOT connected to the voice channel.```").build()).queue();
+            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - play", "```E: The bot is NOT connected to the voice channel.```").build()).queue();
             return;
         }
 
         VoiceChannel voiceChannel = cmdContext.getGuild().getAudioManager().getConnectedChannel();
         if (!isAuthorVoiceChannelConnectedWithBot(voiceChannel, cmdContext.getMember())) {
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - play!", "```E: You cannot play the music because you are not connected to the voice channel with bot.```").build()).queue();
+            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - play", "```E: You cannot play the music because you are not connected to the voice channel with bot.```").build()).queue();
             return;
         }
         new PlayCommander(cmdContext.getArgs(), cmdContext.getEvent(), null);
