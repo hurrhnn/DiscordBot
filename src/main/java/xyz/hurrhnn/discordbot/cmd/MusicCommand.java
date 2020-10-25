@@ -34,12 +34,6 @@ public class MusicCommand implements ICmd {
         GuildMusicManager musicManager;
         AudioPlayer player;
 
-
-        if (System.getProperty("os.arch").equalsIgnoreCase("arm")) {
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Not Supported!", "```E: The process architecture running the bot does not support music features.```").build()).queue();
-            return;
-        }
-
         if (args.length < 2) {
             textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music", getHelp()).build()).queue();
             return;
@@ -142,7 +136,7 @@ public class MusicCommand implements ICmd {
                                 break;
                             }
                         }
-                        textChannel.sendMessage(tmp.toString()).queue();
+                        if(!tmp.toString().isEmpty()) textChannel.sendMessage(tmp.toString()).queue();
                         textChannel.sendMessage("현재 플레이어의 재생 목록은 " + ((musicManager.scheduler.getQueue().size() / 10) + 1) + "개의 페이지가 있습니다.").queue();
                     }
                 }
