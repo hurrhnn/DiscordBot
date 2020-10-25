@@ -40,33 +40,39 @@ public class PlayerManager {
         });
     }
 
-        public void loadAndPlay(TextChannel channel, String trackUrl, String ytThumbnail, String mp3Name) {
+    public void loadAndPlay(TextChannel channel, String trackUrl, String mp3Name) {
         final GuildMusicManager musicManager = this.getMusicManager(channel.getGuild());
 
         this.audioPlayerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-                if(mp3Name != null) channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - play!", "\"" + mp3Name + "\"\nwas successfully added to queue.").build()).queue();
-                else channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - play!", "[" + track.getInfo().title + "](" + trackUrl + ")\nadded to queue.").setThumbnail(ytThumbnail).build()).queue();
-                musicManager.scheduler.queue(track);
+                try {
+                    if (mp3Name != null)
+                        channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - play", "\"" + mp3Name + "\"\nwas successfully added to queue.").build()).queue();
+                    else
+                        channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - play", "[" + track.getInfo().title + "](" + trackUrl + ")\nadded to queue.").setThumbnail("https://i.ytimg.com/vi/" + trackUrl.substring(trackUrl.trim().indexOf("watch?v="), trackUrl.indexOf("watch?v=") + 19).replace("watch?v=", "") + "/0.jpg").build()).queue();
+                    musicManager.scheduler.queue(track);
+                } catch (StringIndexOutOfBoundsException ignored) {
+                    channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - play", "[" + track.getInfo().title + "](" + trackUrl + ")\nadded to queue.").setThumbnail("https://twemoji.maxcdn.com/v/13.0.1/72x72/1f3b5.png").build()).queue();
+                    musicManager.scheduler.queue(track);
+                }
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
                 final List<AudioTrack> tracks = playlist.getTracks();
-                channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - play!", "[" + playlist.getName() + "](" + playlist.getTracks().get(0).getInfo().uri + ")\nadded to queue.").setThumbnail("https://i.ytimg.com/vi/" + trackUrl.substring(trackUrl.trim().indexOf("watch?v="), trackUrl.trim().indexOf('&')).replace("watch?v=", "") + "/0.jpg").build()).queue();
-
+                channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - play", "[" + playlist.getName() + "](" + playlist.getTracks().get(0).getInfo().uri + ")\nadded to queue.").setThumbnail("https://i.ytimg.com/vi/" + trackUrl.substring(trackUrl.trim().indexOf("watch?v="), trackUrl.trim().indexOf('&')).replace("watch?v=", "") + "/0.jpg").build()).queue();
                 for (final AudioTrack track : tracks) musicManager.scheduler.queue(track);
             }
 
-            @Override 
+            @Override
             public void noMatches() {
-                channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - play!", "```E: Unable to play - No matches found on Youtube." + trackUrl + "```").build()).queue();
+                channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - play", "```E: Unable to play - No matches found on Youtube." + trackUrl + "```").build()).queue();
             }
 
             @Override
             public void loadFailed(FriendlyException exception) {
-                channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - play!", "```E: Unable to play - " + exception.getMessage() + "```").build()).queue();
+                channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - play", "```E: Unable to play - " + exception.getMessage() + "```").build()).queue();
             }
         });
     }

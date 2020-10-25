@@ -43,14 +43,7 @@ public class PlayCommander {
         StringBuilder input = new StringBuilder();
 
         for(int i = 0; i < args.toArray().length; i++)
-        {
-            if(i == 0 && !(args.toArray()[0].toString().contains("&list=")))
-            {
-                input.append(args.toArray()[i].toString().replace("http://", "").replace("https://", "")).append(" ");
-                continue;
-            }
             input.append(args.toArray()[i]).append(" ");
-        }
 
         if(!isURL(input.toString().trim()))
         {
@@ -62,9 +55,7 @@ public class PlayCommander {
             input = new StringBuilder(ytSearched);
         }
         PlayerManager manager = PlayerManager.getInstance();
-        final int beginIndex = input.toString().trim().indexOf(',');
-        if(beginIndex == -1) manager.loadAndPlay(event.getChannel(), input.toString().trim(), null, mp3Name);
-        else manager.loadAndPlay(event.getChannel(), input.toString().trim().substring(0, beginIndex), input.toString().trim().substring(beginIndex + 1) ,mp3Name);
+        manager.loadAndPlay(event.getChannel(), input.toString().trim(), mp3Name);
     }
 
     private boolean isURL(String URL) {
@@ -78,7 +69,6 @@ public class PlayCommander {
 
     @Nullable
     public String searchYoutube(String input, GuildMessageReceivedEvent event) {
-
         try {
             List<SearchResult> results = youTube.search()
                     .list("id,snippet")
@@ -92,7 +82,7 @@ public class PlayCommander {
 
             if (!results.isEmpty()) {
                 String videoId = results.get(0).getId().getVideoId();
-                return "https://www.youtube.com/watch?v=" + videoId + "," + "https://i.ytimg.com/vi/" + videoId + "/0.jpg";
+                return "https://www.youtube.com/watch?v=" + videoId;
             }
         } catch (Exception e) {
             PrintStream errPrintStream = null;
