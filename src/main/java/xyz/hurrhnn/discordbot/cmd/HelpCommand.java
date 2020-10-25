@@ -27,7 +27,7 @@ public class HelpCommand implements ICmd {
 
             manager.getCommands().stream().map(ICmd::getName).forEach((it) -> stringBuilder.append("`").append(Info.getPrefix(cmdContext.getEvent())).append(it).append("`, "));
 
-            textChannel.sendMessage(stringBuilder.toString().substring(0, stringBuilder.length() - 2)).queue();
+            textChannel.sendMessage(stringBuilder.substring(0, stringBuilder.length() - 2)).queue();
             return;
         }
 
