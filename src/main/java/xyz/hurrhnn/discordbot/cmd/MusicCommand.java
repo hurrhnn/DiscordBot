@@ -4,11 +4,9 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import me.duncte123.botcommons.messaging.EmbedUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.api.requests.RestAction;
 import xyz.hurrhnn.discordbot.cmd.music.GuildMusicManager;
 import xyz.hurrhnn.discordbot.cmd.music.MusicCommandManager;
 import xyz.hurrhnn.discordbot.cmd.music.PlayerManager;
@@ -99,10 +97,6 @@ public class MusicCommand implements ICmd {
                         return;
                     }
 
-                    RestAction<Message> restAction = textChannel.sendMessage(0 + ". " + player.getPlayingTrack().getInfo().title + " [현재 재생 중]\n");
-                    Message tmpMessage = restAction.complete();
-                    String tmpMessageID = tmpMessage.getId();
-
                     int cnt = 0;
                     StringBuilder tmp = new StringBuilder();
                     if (args.length > 3) {
@@ -117,26 +111,33 @@ public class MusicCommand implements ICmd {
                         }
                         SelectStr[(musicManager.scheduler.getQueue().size() / 10)] = tmp.toString();
                         try {
+                            if (SelectStr[Integer.parseInt(args[3]) - 1].isEmpty())
+                                throw new ArrayIndexOutOfBoundsException();
+                            textChannel.sendMessage(0 + ". " + player.getPlayingTrack().getInfo().title + " [현재 재생 중]\n").queue();
                             textChannel.sendMessage(SelectStr[Integer.parseInt(args[3]) - 1]).queue();
                             textChannel.sendMessage(args[3] + " / " + ((musicManager.scheduler.getQueue().size() / 10) + 1) + " 페이지").queue();
                         } catch (ArrayIndexOutOfBoundsException e) {
-                            textChannel.deleteMessageById(tmpMessageID).complete();
                             eb.setTitle("오류! " + args[3] + "페이지는 존재하지 않습니다!");
                             eb.setFooter(user.getAsTag(), user.getAvatarUrl());
                             textChannel.sendMessage(eb.build()).queue();
                         }
                     } else {
-                        for (AudioTrack audioTrack : musicManager.scheduler.getQueue()) {
-                            cnt++;
-                            tmp.append("> ").append(cnt).append(". ").append(audioTrack.getInfo().title).append("\n");
-                            if (cnt % 10 == 0) {
-                                textChannel.sendMessage(tmp.toString()).queue();
-                                textChannel.sendMessage("현재 플레이어의 재생 목록은 " + ((musicManager.scheduler.getQueue().size() / 10) + 1) + "개의 페이지가 있습니다.").queue();
-                                tmp = new StringBuilder();
-                                break;
+                        if (musicManager.scheduler.getQueue().size() <= 0) {
+                            textChannel.sendMessage(0 + ". " + player.getPlayingTrack().getInfo().title + " [현재 재생 중]\n").queue();
+                        } else {
+                            for (AudioTrack audioTrack : musicManager.scheduler.getQueue()) {
+                                cnt++;
+                                tmp.append("> ").append(cnt).append(". ").append(audioTrack.getInfo().title).append("\n");
+                                if (cnt % 10 == 0)  {
+                                    textChannel.sendMessage(0 + ". " + player.getPlayingTrack().getInfo().title + " [현재 재생 중]\n").queue();
+                                    textChannel.sendMessage(tmp.toString()).queue();
+                                    textChannel.sendMessage("현재 플레이어의 재생 목록은 " + ((musicManager.scheduler.getQueue().size() / 10) + 1) + "개의 페이지가 있습니다.").queue();
+                                    return;
+                                }
                             }
+                            textChannel.sendMessage(0 + ". " + player.getPlayingTrack().getInfo().title + " [현재 재생 중]\n").queue();
+                            textChannel.sendMessage(tmp.toString()).queue();
                         }
-                        if(!tmp.toString().isEmpty()) textChannel.sendMessage(tmp.toString()).queue();
                         textChannel.sendMessage("현재 플레이어의 재생 목록은 " + ((musicManager.scheduler.getQueue().size() / 10) + 1) + "개의 페이지가 있습니다.").queue();
                     }
                 }
