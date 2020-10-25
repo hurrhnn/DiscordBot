@@ -25,6 +25,7 @@ public class CommandManager extends Thread{
         addCommand(new MusicCommand());
         addCommand(new PrefixCommand());
         addCommand(new ServerCommand());
+        addCommand(new InfoCommand());
     }
 
     private void addCommand(ICmd cmd) {
