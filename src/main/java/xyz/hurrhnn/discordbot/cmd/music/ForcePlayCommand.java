@@ -41,6 +41,7 @@ public class ForcePlayCommand implements ICmd {
                 return;                 
             }
         }
+        textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Force_play!", "```E: No matching music found in queue.```").build()).queue();
     }
 
     @Override
@@ -50,7 +51,8 @@ public class ForcePlayCommand implements ICmd {
 
     @Override
     public String getHelp() {
-        return null;
+        return "```diff\n+ Usage: !!music force_play [Part of a music name]\n" +
+                "-- Skip the song you are playing and force the selected song to play.\n```";
     }
 
     @Override

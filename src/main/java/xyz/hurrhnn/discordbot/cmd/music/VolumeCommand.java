@@ -34,7 +34,8 @@ public class VolumeCommand implements ICmd {
 
     @Override
     public String getHelp() {
-        return null;
+        return "```diff\n+ Usage: !!music volume [0-1000]\n" +
+                "-- Set the volume for the music player.\n```";
     }
 
     @Override
