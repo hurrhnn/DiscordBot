@@ -2,8 +2,10 @@ package xyz.hurrhnn.discordbot;
 
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.hurrhnn.discordbot.cmd.MiscellaneousFeature;
@@ -11,6 +13,8 @@ import xyz.hurrhnn.discordbot.util.Info;
 import xyz.hurrhnn.discordbot.util.LogCounter;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
+
 import static xyz.hurrhnn.discordbot.util.Info.logThreadCount;
 
 public class EventListener extends ListenerAdapter {
@@ -38,6 +42,17 @@ public class EventListener extends ListenerAdapter {
         if (raw.startsWith("?") || raw.startsWith(Info.getPrefix(event))) {
             Thread handleThread = new HandleThread(event);
             handleThread.start();
+        }
+    }
+
+    @Override
+    public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
+        if (event.getGuild().getId().equals("769169202744918076")) {
+            event.getMember().modifyNickname("ㅇㅇ").queue();
+            if (event.getUser().isBot())
+                event.getGuild().addRoleToMember(event.getMember(), Objects.requireNonNull(event.getGuild().getRoleById("769196029600989224"))).queue();
+            else
+                event.getGuild().addRoleToMember(event.getMember(), Objects.requireNonNull(event.getGuild().getRoleById("769190655603769395"))).queue();
         }
     }
 }
