@@ -29,7 +29,7 @@ dependencies {
     implementation 'com.google.guava:guava:28.2-jre'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile group: 'com.github.devoxin', name: 'lavaplayer', version: 'efb14d4'
+    compile group: 'com.github.devoxin', name: 'lavaplayer', version: '0b40641'
     compile group: 'net.dv8tion', name: 'JDA', version: '4.2.0_210'
     compile group: 'com.google.apis', name: 'google-api-services-youtube', version: 'v3-rev222-1.25.0'
     compile group: 'com.jagrosh', name: 'jda-utilities',  version: '3.0.4'
