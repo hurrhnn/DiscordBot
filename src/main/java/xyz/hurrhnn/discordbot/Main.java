@@ -1,8 +1,9 @@
 package xyz.hurrhnn.discordbot;
 
-import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.LoggerFactory;
 import xyz.hurrhnn.discordbot.util.SQL;
 
@@ -25,12 +26,13 @@ public class Main {
 //            LoggerFactory.getLogger(Main.class).error("Error to Login: " + e.getMessage());
 //        }
 
-        JDABuilder builder = new JDABuilder(AccountType.BOT);
+        JDABuilder builder = JDABuilder.create(GatewayIntent.getIntents(32509));
         builder.setToken(SQL.getSQLData(con, "info", "token", null)[0]);
         try {
                      builder.setAutoReconnect(true)
                     .setActivity(Activity.playing("Homan transition maneuver"))
                     .addEventListeners(new EventListener())
+                    .disableCache(CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS)
                     .build();
         } catch (LoginException e) {
             LoggerFactory.getLogger(Main.class).error("Error to Login: " + e.getMessage());
