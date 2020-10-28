@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MusicCaptionCommand implements ICmd {
+public class CaptionCommand implements ICmd {
     @Override
     public void handle(CmdContext cmdContext) {
         GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(cmdContext.getGuild());
