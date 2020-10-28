@@ -10,7 +10,7 @@ public class PingCommand implements ICmd {
 
         jda.getRestPing().queue(
                 (ping) -> cmdContext.getChannel()
-                .sendMessageFormat("Pong! - `Reset Ping: %sms`, `WebSocket Ping: %sms`", ping, jda.getGatewayPing()).queue());
+                .sendMessageFormat("Pong! - `Rest Ping: %sms`, `WebSocket Ping: %sms`", ping, jda.getGatewayPing()).queue());
     }
 
     @Override
