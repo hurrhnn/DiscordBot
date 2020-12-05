@@ -15,18 +15,7 @@ public class Main {
     public static Connection con = SQL.initSQLConnection("discordjavabot");
 
     private Main() {
-
-//        JDABuilder builder = JDABuilder.createDefault(SQL.getSQLData(con, "info", "token", null)[0]);
-//        try {
-//                     builder.setAutoReconnect(true)
-//                    .setActivity(Activity.watching("鬼滅の刃"))
-//                    .addEventListeners(new EventListener())
-//                    .build();
-//        } catch (LoginException e) {
-//            LoggerFactory.getLogger(Main.class).error("Error to Login: " + e.getMessage());
-//        }
-
-        JDABuilder builder = JDABuilder.create(GatewayIntent.getIntents(32509));
+        JDABuilder builder = JDABuilder.create(GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS));
         builder.setToken(SQL.getSQLData(con, "info", "token", null)[0]);
         try {
                      builder.setAutoReconnect(true)
