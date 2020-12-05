@@ -30,7 +30,7 @@ public class PlayCommander {
                     JacksonFactory.getDefaultInstance(),
                     null
             )
-                    .setApplicationName("JDA4 Discord Bot")
+                    .setApplicationName("TARS-Alpha")
                     .build();
         } catch (Exception ignored) { }
         youTube = temp;
