@@ -1,7 +1,8 @@
-package xyz.hurrhnn.discordbot.cmd.music;
+package xyz.hurrhnn.discordbot.cmd.music.queue;
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import xyz.hurrhnn.discordbot.cmd.*;
+import xyz.hurrhnn.discordbot.cmd.CmdContext;
+import xyz.hurrhnn.discordbot.cmd.ICmd;
 import xyz.hurrhnn.discordbot.util.Info;
 
 import javax.annotation.Nullable;
@@ -10,26 +11,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class MusicCommandManager extends Thread{
+public class MusicQueueCommandManager extends Thread{
     private final List<ICmd> commands = new ArrayList<>();
 
-    public MusicCommandManager(){
-        addCommand(new MusicHelpCommand(this));
-        addCommand(new JoinCommand());
-        addCommand(new LeaveCommand());
-        addCommand(new PlayCommand());
-        addCommand(new ForcePlayCommand());
-        addCommand(new ShuffleCommand());
-        addCommand(new StopCommand());
-        addCommand(new SkipCommand());
-        addCommand(new QueueCommand());
-        addCommand(new NowPlayingCommand());
-        addCommand(new PauseCommand());
-        addCommand(new ResumeCommand());
-        addCommand(new VolumeCommand());
-        addCommand(new LoopCommand());
-        addCommand(new FlipCommand());
-        addCommand(new CaptionCommand());
+    public MusicQueueCommandManager(){
+        addCommand(new MusicQueueHelpCommand(this));
+        addCommand(new MusicQueueShowCommand());
+        addCommand(new MusicQueueRemoveCommand());
     }
 
     private void addCommand(ICmd cmd) {
@@ -38,7 +26,6 @@ public class MusicCommandManager extends Thread{
         if(nameFound) {
             throw new IllegalArgumentException("A command with this name is already present.");
         }
-
         commands.add(cmd);
     }
 
@@ -63,12 +50,12 @@ public class MusicCommandManager extends Thread{
                 .replaceFirst("(?-i)" + Pattern.quote(Info.getPrefix(event)), "")
                 .split("\\s+");
 
-        String invoke = split[1].toLowerCase();
+        String invoke = split[2].toLowerCase();
         ICmd cmd = this.getCommand(invoke);
 
         if(cmd != null)
         {
-            List<String> args = Arrays.asList(split).subList(2, split.length);
+            List<String> args = Arrays.asList(split).subList(3, split.length);
 
             CmdContext cmdContext = new CmdContext(event, args);
             cmd.handle(cmdContext);

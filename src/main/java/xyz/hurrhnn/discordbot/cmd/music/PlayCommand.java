@@ -17,7 +17,7 @@ public class PlayCommand implements ICmd {
 
         TextChannel textChannel = cmdContext.getChannel();
 
-        if(isArgsEmpty(cmdContext.getArgs())) {
+        if (isArgsEmpty(cmdContext.getArgs())) {
             textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Play", getHelp()).build()).queue();
             return;
         }
@@ -35,9 +35,13 @@ public class PlayCommand implements ICmd {
         new PlayCommander(cmdContext.getArgs(), cmdContext.getEvent(), null);
     }
 
-    public boolean isVoiceChannelConnected(AudioManager audioManager) { return audioManager.isConnected(); }
+    public boolean isVoiceChannelConnected(AudioManager audioManager) {
+        return audioManager.isConnected();
+    }
 
-    public boolean isAuthorVoiceChannelConnectedWithBot(VoiceChannel voiceChannel, Member member) { return !(voiceChannel != null && !voiceChannel.getMembers().contains(member)); }
+    public boolean isAuthorVoiceChannelConnectedWithBot(VoiceChannel voiceChannel, Member member) {
+        return !(voiceChannel != null && !voiceChannel.getMembers().contains(member));
+    }
 
     @Override
     public String getName() {
@@ -46,7 +50,8 @@ public class PlayCommand implements ICmd {
 
     @Override
     public String getHelp() {
-        return null;
+        return "```diff\n+ Usage: !!music play [music]\n" +
+                "-- [music] can be youtube video, playlist link, music titles to search for on youtube, and direct audio link.\n```";
     }
 
     @Override

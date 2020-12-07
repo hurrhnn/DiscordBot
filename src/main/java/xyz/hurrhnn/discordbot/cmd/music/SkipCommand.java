@@ -92,7 +92,9 @@ public class SkipCommand implements ICmd {
 
     @Override
     public String getHelp() {
-        return null;
+        return "```diff\n+ Usage: !!music skip\n" +
+                "-- Stop the song that is playing and play the next song.\n" +
+                "-- If you do not have administrator permissions, vote to determine whether to skip.\n```";
     }
 
     @Override
