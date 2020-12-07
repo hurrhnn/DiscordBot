@@ -53,6 +53,7 @@ public class ServerStatusCommand implements ICmd {
 
     @Override
     public String getHelp() {
-        return null;
+        return "```diff\n+ Usage: !!server state\n" +
+                "-- Sends the server status received from the svState server you are connected to.\n```";
     }
 }

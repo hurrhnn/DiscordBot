@@ -25,11 +25,9 @@ public class ServerHelpCommand implements ICmd {
         if(args.isEmpty())
         {
             StringBuilder stringBuilder = new StringBuilder();
-
             stringBuilder.append("Available commands are: \n");
 
-            manager.getCommands().stream().map(ICmd::getName).forEach((it) -> stringBuilder.append("`").append(Info.getPrefix(cmdContext.getEvent())).append(it).append("`, "));
-
+            manager.getCommands().stream().map(ICmd::getName).forEach((it) -> stringBuilder.append("`").append(Info.getPrefix(cmdContext.getEvent())).append("server ").append(it).append("`, "));
             textChannel.get().sendMessage(stringBuilder.substring(0, stringBuilder.length() - 2)).queue();
             return;
         }
@@ -42,7 +40,7 @@ public class ServerHelpCommand implements ICmd {
             textChannel.get().sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```E: Nothing found for " + search).build()+ "```").queue();
             return;
         }
-        textChannel.get().sendMessage(EmbedUtils.embedMessageWithTitle("Usage", cmd.getHelp()).build()).queue();
+        textChannel.get().sendMessage(EmbedUtils.embedMessageWithTitle("Server - Usage", cmd.getHelp()).build()).queue();
     }
 
     @Override

@@ -15,9 +15,10 @@ public class ConnectCommand implements ICmd {
     public void handle(CmdContext cmdContext) {
         try {
             ServerStateSocket.clientSocket = new Socket(InetAddress.getByName(cmdContext.getArgs().get(0)), 9090);
+            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Server - Connect", "```Connected to " + ServerStateSocket.clientSocket.getRemoteSocketAddress().toString().substring(1) + " Server.```").build()).queue();
         }catch (IOException ignored)
         {
-            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Server - Connect", "```E: Can't connect remote server.").build()).queue();
+            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Server - Connect", "```E: Can't connect remote server.```").build()).queue();
         }
     }
 
