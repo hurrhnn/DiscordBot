@@ -20,7 +20,7 @@ public class CleanChatCommand implements ICmd {
         TextChannel textChannel = cmdContext.getChannel();
 
         if(isArgsEmpty(cmdContext.getArgs())) {
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("CleanChat", getHelp()).build()).queue();
+            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Wipe - Chat Cleaner", getHelp()).build()).queue();
             return;
         }
 

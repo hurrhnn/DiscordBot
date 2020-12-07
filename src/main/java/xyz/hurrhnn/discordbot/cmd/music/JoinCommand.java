@@ -18,14 +18,14 @@ public class JoinCommand implements ICmd {
         TextChannel textChannel = cmdContext.getChannel();
 
         if (isVoiceChannelConnected(cmdContext.getGuild().getAudioManager())) {
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - join!", "```E: The bot was already connected to the voice channel.```").build()).queue();
+            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Join!", "```E: The bot was already connected to the voice channel.```").build()).queue();
             return;
         }
 
         GuildVoiceState memberVoiceState = Objects.requireNonNull(cmdContext.getMember()).getVoiceState();
 
         if (!isAuthorVoiceChannelConnected(memberVoiceState)) {
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - join!", "Hey, " + cmdContext.getAuthor().getAsMention() + ", please connect the voice channel first.").build()).queue();
+            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Join!", "Hey, " + cmdContext.getAuthor().getAsMention() + ", please connect the voice channel first.").build()).queue();
             return;
         }
 
@@ -36,14 +36,14 @@ public class JoinCommand implements ICmd {
 
         if (hasBotPermissionToConnectToVoiceChannel(voiceChannel, cmdContext.getSelfMember())) {
 
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - join", "```E: The bot doesn't have permission to connect to the voice channel. Please check if you have permission to connect the voice.```").build()).queue();
+            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Join", "```E: The bot doesn't have permission to connect to the voice channel. Please check if you have permission to connect the voice.```").build()).queue();
             return;
         }
         GuildMusicInfo.SetIsGuildSkipRequestDelayedMap(textChannel.getId(), false);
         cmdContext.getGuild().getAudioManager().openAudioConnection(voiceChannel);
 
         PlayerManager.getInstance().getMusicManager(cmdContext.getGuild()).scheduler.player.setVolume(80);
-        textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - join", "```Connected to the voice channel.```").build()).queue();
+        textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Join", "```Connected to the voice channel.```").build()).queue();
 
     }
 

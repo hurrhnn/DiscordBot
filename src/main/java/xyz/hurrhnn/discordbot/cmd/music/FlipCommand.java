@@ -16,12 +16,12 @@ public class FlipCommand implements ICmd {
         TrackScheduler scheduler = PlayerManager.getInstance().getMusicManager(cmdContext.getGuild()).scheduler;
 
         if (scheduler.getQueue().size() < 2)
-            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - flip", "```E: There are less than 2 pending songs.```").build()).queue();
+            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - Flip", "```E: There are less than 2 pending songs.```").build()).queue();
 
         LinkedList<AudioTrack> audioTracks = new LinkedList<>(scheduler.getQueue());
         Collections.reverse(audioTracks);
         scheduler.queue = Queues.newLinkedBlockingQueue(audioTracks);
-        cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - flip", "Successfully flip " + scheduler.queue.size() + " queued songs.").build()).queue();
+        cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - Flip", "Successfully flip " + scheduler.queue.size() + " queued songs.").build()).queue();
     }
 
     @Override

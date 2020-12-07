@@ -19,13 +19,13 @@ public class SkipCommand implements ICmd {
         GuildMusicManager musicManager = playerManager.getMusicManager(cmdContext.getGuild());
 
         if (musicManager.scheduler.player.getPlayingTrack() == null) {
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - skip", "```E: There are no songs in the queue to skip.```").build()).queue();
+            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Skip", "```E: There are no songs in the queue to skip.```").build()).queue();
             return;
         }
 
         if(musicManager.scheduler.isLoopQueue)
         {
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - skip", "```E: Loop mode is set on the player.```").build()).queue();
+            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Skip", "```E: Loop mode is set on the player.```").build()).queue();
             return;
         }
 
@@ -40,13 +40,13 @@ public class SkipCommand implements ICmd {
         musicManager = playerManager.getMusicManager(cmdContext.getGuild());
 
         if (isAuthorAdministrator(cmdContext.getMember())) {
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - skip", "You are the administrator of this server.\nSkip [" + musicManager.scheduler.player.getPlayingTrack().getInfo().title + "](" + musicManager.scheduler.player.getPlayingTrack().getInfo().uri + ") without voting.").build()).queue();
+            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Skip", "You are the administrator of this server.\nSkip [" + musicManager.scheduler.player.getPlayingTrack().getInfo().title + "](" + musicManager.scheduler.player.getPlayingTrack().getInfo().uri + ") without voting.").build()).queue();
             musicManager.scheduler.nextTrack();
             GuildMusicInfo.SetIsGuildSkipRequestDelayedMap(textChannel.getId(), false);
             return;
         }
 
-        MessageAction messageAction = textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - skip", "Skip\n[" + musicManager.scheduler.player.getPlayingTrack().getInfo().title + "](" + musicManager.scheduler.player.getPlayingTrack().getInfo().uri + "?)").build());
+        MessageAction messageAction = textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Skip", "Skip\n[" + musicManager.scheduler.player.getPlayingTrack().getInfo().title + "](" + musicManager.scheduler.player.getPlayingTrack().getInfo().uri + ")?").build());
         Message embedMessage = messageAction.complete();
         String embedMessageID = embedMessage.getId();
         embedMessage.addReaction("U+2B55").complete();
@@ -71,13 +71,13 @@ public class SkipCommand implements ICmd {
                     break;
             }
         }
-        if (O == X && O + X == 0) textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - skip", "No one voted. The song will not be skipped.").build()).queue();
-        else if (O == X) textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - skip", "There's a lot of course! The song will not be skipped.").build()).queue();
+        if (O == X && O + X == 0) textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Skip", "No one voted. The song will not be skipped.").build()).queue();
+        else if (O == X) textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Skip", "There's a lot of course! The song will not be skipped.").build()).queue();
         else if (O > X) {
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - skip", "Skipped\n[" + musicManager.scheduler.player.getPlayingTrack().getInfo().title + "](" + musicManager.scheduler.player.getPlayingTrack().getInfo().uri + ") by the vote.").build()).queue();
+            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Skip", "Skipped\n[" + musicManager.scheduler.player.getPlayingTrack().getInfo().title + "](" + musicManager.scheduler.player.getPlayingTrack().getInfo().uri + ") by the vote.").build()).queue();
             musicManager.scheduler.nextTrack();
             GuildMusicInfo.SetIsGuildSkipRequestDelayedMap(textChannel.getId(), false);
-        } else textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - skip", "There are many opinions that we shouldn't skip it! Cancel skipping the song.").build()).queue();
+        } else textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Skip", "There are many opinions that we shouldn't skip it! Cancel skipping the song.").build()).queue();
         GuildMusicInfo.SetIsGuildSkipRequestDelayedMap(textChannel.getId(), false);
     }
 

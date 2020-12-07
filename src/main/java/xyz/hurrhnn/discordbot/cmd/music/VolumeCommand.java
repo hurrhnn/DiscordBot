@@ -17,13 +17,13 @@ public class VolumeCommand implements ICmd {
         AudioPlayer audioPlayer = PlayerManager.getInstance().getMusicManager(cmdContext.getGuild()).scheduler.player;
 
         if(isArgsEmpty(cmdContext.getArgs()))
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - volume", "Current Volume: " + audioPlayer.getVolume()).build()).queue();
+            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Volume", "Current Volume: " + audioPlayer.getVolume()).build()).queue();
 
         try {
             audioPlayer.setVolume(Integer.parseInt(cmdContext.getArgs().get(0)));
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - volume", ("The volume for the music player is set to " + audioPlayer.getVolume() + ".")).build()).queue();
+            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Volume", ("The volume for the music player is set to " + audioPlayer.getVolume() + ".")).build()).queue();
         }catch (NumberFormatException ignored) {
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - volume", "```E: Volume must be integer!").build()).queue();
+            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Volume", "```E: Volume must be integer!").build()).queue();
         }
     }
 

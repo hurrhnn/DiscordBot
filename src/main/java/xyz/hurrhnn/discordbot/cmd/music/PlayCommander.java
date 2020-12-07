@@ -49,7 +49,7 @@ public class PlayCommander {
         {
             String ytSearched = searchYoutube(input.toString(), event);
             if (ytSearched == null) {
-                channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - play!", "```E: No results were found on YouTube.```").build()).queue();
+                channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Play!", "```E: No results were found on YouTube.```").build()).queue();
                 return;
             }
             input = new StringBuilder(ytSearched);

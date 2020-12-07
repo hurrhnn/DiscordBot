@@ -14,7 +14,7 @@ public class LoopCommand implements ICmd {
         GuildMusicManager musicManager = playerManager.getMusicManager(cmdContext.getGuild());
         musicManager.scheduler.isLoopQueue = !musicManager.scheduler.isLoopQueue;
 
-        cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - loop!", "The loop mode of the music player has been " + (musicManager.scheduler.isLoopQueue ? "activated." : "deactivated.")).build()).queue();
+        cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - Loop!", "The loop mode of the music player has been " + (musicManager.scheduler.isLoopQueue ? "activated." : "deactivated.")).build()).queue();
     }
 
     @Override

@@ -17,12 +17,12 @@ public class ShuffleCommand implements ICmd {
         TrackScheduler scheduler = PlayerManager.getInstance().getMusicManager(cmdContext.getGuild()).scheduler;
 
         if(scheduler.getQueue().size() < 2)
-            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - shuffle", "```E: There are less than 2 pending songs.```").build()).queue();
+            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - Shuffle", "```E: There are less than 2 pending songs.```").build()).queue();
 
         LinkedList<AudioTrack> audioTracks = new LinkedList<>(scheduler.getQueue());
         Collections.shuffle(audioTracks);
         scheduler.queue = Queues.newLinkedBlockingQueue(audioTracks);
-        cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - shuffle", "Successfully shuffle " + scheduler.queue.size() + " queued songs.").build()).queue();
+        cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - Shuffle", "Successfully shuffle " + scheduler.queue.size() + " queued songs.").build()).queue();
     }
 
     @Override
