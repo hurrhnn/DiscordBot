@@ -35,7 +35,7 @@ public class QueueCommand implements ICmd {
 
     @Override
     public String getHelp() {
-        return "```diff\n+ Usage: !!music queue [command]\n" +
+        return "```diff\n+ Usage: !!music queue [show/remove]\n" +
                 "-- Manage the music player queue.\n```";
     }
 
