@@ -107,6 +107,6 @@ public class CaptionCommand implements ICmd {
     public String getHelp() {
         return "```diff\n+ Usage: !!music caption [ISO Language Code]\n" +
                 "-- Displays captions for music currently playing.\n" +
-                "-- If a language code is defined, captions for that language are displayed.\n```";
+                "-- If a language code is set, captions for that language are displayed.\n```";
     }
 }
