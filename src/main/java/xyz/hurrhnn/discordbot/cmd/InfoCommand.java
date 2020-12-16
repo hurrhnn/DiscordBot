@@ -34,7 +34,7 @@ public class InfoCommand implements ICmd{
             }
         }
 
-        textChannel.sendMessage("System Spec:\n" + "> CPU - " + hal.getProcessor().getProcessorIdentifier().getName().replace("CPU ", "").replace("    ", "") + "\n" +
+        textChannel.sendMessage("System Spec:\n" + "> CPU - " + hal.getProcessor().getProcessorIdentifier().getName().replace("CPU ", "").replace("       ", "") + "\n" +
                 "> Memory - MaxHeapSize: " + Runtime.getRuntime().maxMemory() / 1048576 + "M,  " +
                 "AllocatedHeapSize: " + Runtime.getRuntime().totalMemory() / 1048576 + "M,  " +
                 "FreeHeapSize: " + Runtime.getRuntime().freeMemory() / 1048576 + "M\n" +
