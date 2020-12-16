@@ -29,11 +29,10 @@ public class MusicQueueShowCommand implements ICmd {
         }
 
         try {
-            int arg = Integer.parseInt(cmdContext.getArgs().get(0));
-
             int cnt = 0;
             StringBuilder tmp = new StringBuilder();
             if (!isArgsEmpty(cmdContext.getArgs())) {
+                int arg = Integer.parseInt(cmdContext.getArgs().get(0));
                 String[] selectStr = new String[(musicManager.scheduler.getQueue().size() / 10) + 1];
                 for (AudioTrack audioTrack : musicManager.scheduler.getQueue()) {
                     cnt++;
@@ -49,7 +48,7 @@ public class MusicQueueShowCommand implements ICmd {
                         throw new ArrayIndexOutOfBoundsException();
                     textChannel.sendMessage(0 + ". " + player.getPlayingTrack().getInfo().title + " [Now Playing]\n").queue();
                     textChannel.sendMessage(selectStr[arg - 1]).queue();
-                    textChannel.sendMessage(toString() + " / " + ((musicManager.scheduler.getQueue().size() / 10) + 1) + " Page").queue();
+                    textChannel.sendMessage(arg + " / " + ((musicManager.scheduler.getQueue().size() / 10) + 1) + " Page").queue();
                 } catch (ArrayIndexOutOfBoundsException e) {
                     cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - Queue", "```E: " + arg + " Page does not exist.```").build()).queue();
                 }
