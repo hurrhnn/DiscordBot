@@ -19,7 +19,7 @@ public class Main {
         builder.setToken(SQL.getSQLData(con, "info", "token", null)[0]);
         try {
                      builder.setAutoReconnect(true)
-                    .setActivity(Activity.playing("Homan transition maneuver"))
+                    .setActivity(Activity.listening("Devil's Whispering"))
                     .addEventListeners(new EventListener())
                     .disableCache(CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS)
                     .build();
