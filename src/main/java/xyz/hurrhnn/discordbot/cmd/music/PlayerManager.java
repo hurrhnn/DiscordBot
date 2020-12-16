@@ -5,6 +5,7 @@ import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
+import com.sedmelluq.discord.lavaplayer.source.nico.NicoAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
@@ -12,6 +13,7 @@ import me.duncte123.botcommons.messaging.EmbedUtils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,7 @@ public class PlayerManager {
     private PlayerManager() {
         this.musicManagers = new HashMap<>();
         this.audioPlayerManager = new DefaultAudioPlayerManager();
+        this.audioPlayerManager.registerSourceManager(new NicoAudioSourceManager("20sunrin022@sunrint.hs.kr", new String(Base64.getDecoder().decode("b3IwNDEy"))));
 
         this.audioPlayerManager.getConfiguration().setResamplingQuality(AudioConfiguration.ResamplingQuality.HIGH);
         this.audioPlayerManager.getConfiguration().setOpusEncodingQuality(AudioConfiguration.OPUS_QUALITY_MAX);
@@ -48,7 +51,7 @@ public class PlayerManager {
             public void trackLoaded(AudioTrack track) {
                 try {
                     if (mp3Name != null)
-                        channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Play", "\"" + mp3Name + "\"\nwas successfully added to queue.").build()).queue();
+                        channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Play", "MP3 Music: [" + mp3Name + "](" + trackUrl + ")\nadded to queue.").build()).queue();
                     else
                         channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Play", "[" + track.getInfo().title + "](" + trackUrl + ")\nadded to queue.").setThumbnail("https://i.ytimg.com/vi/" + trackUrl.substring(trackUrl.trim().indexOf("watch?v="), trackUrl.indexOf("watch?v=") + 19).replace("watch?v=", "") + "/0.jpg").build()).queue();
                     musicManager.scheduler.queue(track);
