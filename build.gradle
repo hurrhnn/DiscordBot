@@ -28,6 +28,7 @@ dependencies {
     implementation 'junit:junit:4.12'
     implementation 'com.google.guava:guava:28.2-jre'
 
+    implementation 'net.lingala.zip4j:zip4j:2.6.4'
     implementation group: 'com.github.devoxin', name: 'lavaplayer', version: '17d1c58'
     implementation group: 'net.dv8tion', name: 'JDA', version: '4.2.0_210'
     implementation group: 'com.google.apis', name: 'google-api-services-youtube', version: 'v3-rev222-1.25.0'
