@@ -7,12 +7,11 @@ import com.google.api.services.youtube.model.SearchResult;
 import me.duncte123.botcommons.messaging.EmbedUtils;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import xyz.hurrhnn.discordbot.util.HTTPMethods;
 import xyz.hurrhnn.discordbot.util.SQL;
 
 import javax.annotation.Nullable;
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -23,7 +22,6 @@ public class PlayCommander {
 
     public PlayCommander(List<String> args, GuildMessageReceivedEvent event, String mp3Name) {
         YouTube temp = null;
-
         try {
             temp = new YouTube.Builder(
                     GoogleNetHttpTransport.newTrustedTransport(),
@@ -32,7 +30,8 @@ public class PlayCommander {
             )
                     .setApplicationName("TARS-Alpha")
                     .build();
-        } catch (Exception ignored) { }
+        } catch (Exception ignored) {
+        }
         youTube = temp;
         handle(args, event, mp3Name);
     }
@@ -42,17 +41,25 @@ public class PlayCommander {
         TextChannel channel = event.getChannel();
         StringBuilder input = new StringBuilder();
 
-        for(int i = 0; i < args.toArray().length; i++)
+        for (int i = 0; i < args.toArray().length; i++)
             input.append(args.toArray()[i]).append(" ");
 
-        if(!isURL(input.toString().trim()))
-        {
-            String ytSearched = searchYoutube(input.toString(), event);
-            if (ytSearched == null) {
-                channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Play!", "```E: No results were found on YouTube.```").build()).queue();
+        if (mp3Name != null) {
+            if(!mp3Name.contains(".mp3")) mp3Name += ".mp3";
+            if(HTTPMethods.GET("https://hurrhnn.xyz/downloadMP3fromDB.php?mp3=" + mp3Name, null).contains("ERROR")) {
+                channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Play!", "```E: No mp3 results were found on mp3 list.```").build()).queue();
                 return;
             }
-            input = new StringBuilder(ytSearched);
+            input = new StringBuilder().append("https://hurrhnn.xyz/MP3/").append(mp3Name);
+        } else {
+            if (!isURL(input.toString().trim())) {
+                String ytSearched = searchYoutube(input.toString(), event);
+                if (ytSearched == null) {
+                    channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Play!", "```E: No results were found on YouTube.```").build()).queue();
+                    return;
+                }
+                input = new StringBuilder(ytSearched);
+            }
         }
         PlayerManager manager = PlayerManager.getInstance();
         manager.loadAndPlay(event.getChannel(), input.toString().trim(), mp3Name);
@@ -89,7 +96,8 @@ public class PlayCommander {
             ByteArrayOutputStream err = new ByteArrayOutputStream();
             try {
                 errPrintStream = new PrintStream(err, true, StandardCharsets.UTF_8.name());
-            } catch (UnsupportedEncodingException ignored) { }
+            } catch (UnsupportedEncodingException ignored) {
+            }
             e.printStackTrace(errPrintStream);
             event.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + "E: " + err.toString().split("\n")[0] + "\n```").build()).queue();
         }
