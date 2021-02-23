@@ -39,7 +39,7 @@ public class HelpCommand implements ICmd {
             textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Nothing found for " + search + "```").build()).queue();
             return;
         }
-        textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Usage", cmd.getHelp()).build()).queue();
+        textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Usage - " + cmd.getName(), cmd.getHelp()).build()).queue();
     }
 
     @Override
