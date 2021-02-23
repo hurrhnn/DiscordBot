@@ -1,7 +1,6 @@
 package xyz.hurrhnn.discordbot;
 
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.LoggerFactory;
@@ -19,7 +18,6 @@ public class Main {
         builder.setToken(SQL.getSQLData(con, "info", "token", null)[0]);
         try {
                      builder.setAutoReconnect(true)
-                    .setActivity(Activity.listening("Devil's Whispering"))
                     .addEventListeners(new EventListener())
                     .disableCache(CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS)
                     .build();
