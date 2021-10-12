@@ -14,40 +14,38 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import xyz.hurrhnn.discordbot.Main;
 import xyz.hurrhnn.discordbot.cmd.CmdContext;
 import xyz.hurrhnn.discordbot.cmd.ICmd;
 import xyz.hurrhnn.discordbot.util.SQL;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CaptionCommand implements ICmd {
     @Override
     public void handle(CmdContext cmdContext) {
         GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(cmdContext.getGuild());
 
-        if(musicManager.scheduler.isCaptionEnabled) {
-            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - Caption", "Music captions are disabled.").build()).queue();
+        if (musicManager.scheduler.isCaptionEnabled) {
+            cmdContext.getChannel().sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Caption", "Music captions are disabled.").build()).queue();
             musicManager.scheduler.isCaptionEnabled = false;
             return;
         }
 
-        double restPing = Double.parseDouble(String.format("%.2f", (double)(cmdContext.getJDA().getRestPing().complete() / 1000)));
-        if(musicManager.audioPlayer.getPlayingTrack() == null) {
-            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - Caption", "```E: There are no songs in the queue.```").build()).queue();
+        double restPing = Double.parseDouble(String.format("%.2f", (double) (cmdContext.getJDA().getRestPing().complete() / 1000)));
+        if (musicManager.audioPlayer.getPlayingTrack() == null) {
+            cmdContext.getChannel().sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Caption", "```E: There are no songs in the queue.```").build()).queue();
             return;
         }
 
         try {
             Map<String, String> captionMap = new HashMap<>();
-            YouTube youTube = new YouTube.Builder(GoogleNetHttpTransport.newTrustedTransport(), JacksonFactory.getDefaultInstance(),null).setApplicationName("JDA4 Discord Bot").build();
-            List<SearchResult> results = youTube.search().list("id,snippet").setQ(musicManager.scheduler.player.getPlayingTrack().getInfo().uri).setMaxResults(1L).setType("video").setFields("items(id/kind,id/videoId,snippet/title,snippet/thumbnails/default/url)").setKey(SQL.getSQLData(SQL.initSQLConnection("discordjavabot"), "info", "token", cmdContext.getEvent())[2]).execute().getItems();
+            YouTube youTube = new YouTube.Builder(GoogleNetHttpTransport.newTrustedTransport(), JacksonFactory.getDefaultInstance(), null).setApplicationName("JDA4 Discord Bot").build();
+            List<SearchResult> results = youTube.search().list("id,snippet").setQ(musicManager.scheduler.player.getPlayingTrack().getInfo().uri).setMaxResults(1L).setType("video").setFields("items(id/kind,id/videoId,snippet/title,snippet/thumbnails/default/url)").setKey(Objects.requireNonNull(SQL.getSQLData(Main.con, "info", "token", cmdContext.getEvent()))[2]).execute().getItems();
 
             String videoId = results.get(0).getId().getVideoId();
             String lc = cmdContext.getArgs().size() > 0 ? cmdContext.getArgs().get(0) : "ko";
-            Connection.Response loginPageRequest = Jsoup.connect("http://video.google.com/timedtext?lang=" + lc + "&v=" + videoId)
+            Connection.Response loginPageRequest = Jsoup.connect("https://video.google.com/timedtext?lang=" + lc + "&v=" + videoId)
                     .timeout(500)
                     .header("Accept", "*/*")
                     .header("AJAX", "true")
@@ -62,33 +60,33 @@ public class CaptionCommand implements ICmd {
 
             Document document = loginPageRequest.parse();
 
-            for(Element element : document.getElementsByAttribute("start")) {
+            for (Element element : document.getElementsByAttribute("start")) {
                 captionMap.put(String.format("%.2f", Double.parseDouble(element.attr("start")) - restPing), element.text());
             }
 
             musicManager.scheduler.isCaptionEnabled = true;
             EmbedBuilder embedBuilder = EmbedUtils.embedMessageWithTitle("Music - Caption", "```Please wait for caption..```");
-            RestAction<Message> messageRestAction =  cmdContext.getChannel().sendMessage(embedBuilder.build());
+            RestAction<Message> messageRestAction = cmdContext.getChannel().sendMessageEmbeds(embedBuilder.build());
             Message message = messageRestAction.complete();
 
             while ((musicManager.audioPlayer.getPlayingTrack() != null) && (musicManager.audioPlayer.getPlayingTrack().getState() == AudioTrackState.PLAYING) && (musicManager.scheduler.isCaptionEnabled)) {
-                String currentTime = String.format("%.2f",((double) musicManager.scheduler.player.getPlayingTrack().getPosition() / 1000));
-                if(captionMap.containsKey(currentTime)) {
-                    if(!cmdContext.getChannel().getHistory().retrievePast(1).complete().get(0).getId().equals(message.getId())) {
+                String currentTime = String.format("%.2f", ((double) musicManager.scheduler.player.getPlayingTrack().getPosition() / 1000));
+                if (captionMap.containsKey(currentTime)) {
+                    if (!cmdContext.getChannel().getHistory().retrievePast(1).complete().get(0).getId().equals(message.getId())) {
                         message.delete().queue();
                         embedBuilder = EmbedUtils.embedMessageWithTitle("Music - Caption", "```\n| " + StringEscapeUtils.unescapeHtml4(captionMap.get(currentTime)) + " |\n```");
-                        messageRestAction = cmdContext.getChannel().sendMessage(embedBuilder.build());
+                        messageRestAction = cmdContext.getChannel().sendMessageEmbeds(embedBuilder.build());
                         message = messageRestAction.complete();
-                    }
-                    else cmdContext.getChannel().editMessageById(message.getId(), embedBuilder.setDescription("```\n| " + StringEscapeUtils.unescapeHtml4(captionMap.get(currentTime)) + " |\n```").build()).queue();
+                    } else
+                        cmdContext.getChannel().editMessageById(message.getId(), embedBuilder.setDescription("```\n| " + StringEscapeUtils.unescapeHtml4(captionMap.get(currentTime)) + " |\n```").build()).queue();
                     captionMap.remove(currentTime);
-                } else if(captionMap.size() == 0) break;
+                } else if (captionMap.size() == 0) break;
                 Thread.sleep(1);
             }
             cmdContext.getChannel().deleteMessageById(message.getId()).queue();
             musicManager.scheduler.isCaptionEnabled = false;
         } catch (Exception ignored) {
-            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - Caption", "```E: No captions found on video.```").build()).queue();
+            cmdContext.getChannel().sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Caption", "```E: No captions found on video.```").build()).queue();
             musicManager.scheduler.isCaptionEnabled = false;
         }
     }

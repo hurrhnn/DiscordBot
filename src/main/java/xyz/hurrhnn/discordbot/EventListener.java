@@ -44,15 +44,5 @@ public class EventListener extends ListenerAdapter {
             handleThread.start();
         }
     }
-
-    @Override
-    public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
-        if (event.getGuild().getId().equals("796070970661666866")) {
-            event.getMember().modifyNickname("ㅇㅇ").queue();
-            if (event.getUser().isBot())
-                event.getGuild().addRoleToMember(event.getMember(), Objects.requireNonNull(event.getGuild().getRoleById("796086661204541440"))).queue();
-            else
-                event.getGuild().addRoleToMember(event.getMember(), Objects.requireNonNull(event.getGuild().getRoleById("796083823795896320"))).queue();
-        }
-    }
 }
+

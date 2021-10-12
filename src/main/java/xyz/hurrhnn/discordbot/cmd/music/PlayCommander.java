@@ -7,6 +7,7 @@ import com.google.api.services.youtube.model.SearchResult;
 import me.duncte123.botcommons.messaging.EmbedUtils;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import xyz.hurrhnn.discordbot.Main;
 import xyz.hurrhnn.discordbot.util.HTTPMethods;
 import xyz.hurrhnn.discordbot.util.SQL;
 
@@ -16,6 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Objects;
 
 public class PlayCommander {
     public final YouTube youTube;
@@ -83,7 +85,7 @@ public class PlayCommander {
                     .setMaxResults(1L)
                     .setType("video")
                     .setFields("items(id/kind,id/videoId,snippet/title,snippet/thumbnails/default/url)")
-                    .setKey(SQL.getSQLData(SQL.initSQLConnection("discordjavabot"), "info", "token", event)[1])
+                    .setKey(Objects.requireNonNull(SQL.getSQLData(Main.con, "info", "token", event))[1])
                     .execute()
                     .getItems();
 
@@ -100,6 +102,7 @@ public class PlayCommander {
             }
             e.printStackTrace(errPrintStream);
             event.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + "E: " + err.toString().split("\n")[0] + "\n```").build()).queue();
+
         }
         return null;
     }

@@ -8,6 +8,7 @@ import xyz.hurrhnn.discordbot.util.SQL;
 
 import javax.security.auth.login.LoginException;
 import java.sql.Connection;
+import java.util.Objects;
 
 public class Main {
 
@@ -15,7 +16,7 @@ public class Main {
 
     private Main() {
         JDABuilder builder = JDABuilder.create(GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS));
-        builder.setToken(SQL.getSQLData(con, "info", "token", null)[0]);
+        builder.setToken(Objects.requireNonNull(SQL.getSQLData(con, "info", "token", null))[0]);
         try {
                      builder.setAutoReconnect(true)
                     .addEventListeners(new EventListener())

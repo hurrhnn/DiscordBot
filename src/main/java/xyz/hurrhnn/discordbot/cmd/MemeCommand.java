@@ -3,6 +3,7 @@ package xyz.hurrhnn.discordbot.cmd;
 import me.duncte123.botcommons.messaging.EmbedUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -25,7 +26,6 @@ public class MemeCommand implements ICmd {
             boolean isSavedURI = false;
             String[] memeLink = SQL.getSQLData(Main.con, "saved_meme", "meme_link", cmdContext.getEvent());
             String[] guildIndex = SQL.getSQLData(Main.con, "saved_meme", "guild_id", cmdContext.getEvent());
-
             for(int i = 0; i < guildIndex.length; i++)
             {
                 if(memeLink[i].equals(childDataObject.get("url").toString()) && guildIndex[i].equals(cmdContext.getGuild().getId()))
