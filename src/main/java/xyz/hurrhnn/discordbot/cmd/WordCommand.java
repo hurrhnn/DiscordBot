@@ -2,9 +2,9 @@ package xyz.hurrhnn.discordbot.cmd;
 
 import me.duncte123.botcommons.messaging.EmbedUtils;
 import net.dv8tion.jda.api.entities.TextChannel;
+import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import org.json.JSONObject;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
@@ -18,18 +18,15 @@ public class WordCommand implements ICmd {
     public void handle(CmdContext cmdContext) {
         try {
             String arg = String.join("", cmdContext.getArgs()).toLowerCase().replaceAll("\\W", "");
-            HttpsURLConnection httpsURLConnection = (HttpsURLConnection) new URL("https://suggest-bar.daum.net/suggest?mod=json&code=utf_in_out&enc=utf&id=language&cate=eng&q=" + arg).openConnection();
+            HttpsURLConnection httpsURLConnection = (HttpsURLConnection) new URL("https://suggest.dic.daum.net/language/v1/search.json?cate=eng&q=" + arg).openConnection();
+            httpsURLConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:99.0) Gecko/20100101 Firefox/99.0");
 
-            InputStream inputStream = httpsURLConnection.getInputStream();
-            Reader inputStreamReader = new InputStreamReader(inputStream);
-
-            JSONParser jParser = new JSONParser();
-            JSONObject rootObject = (JSONObject) jParser.parse(inputStreamReader);
-            JSONArray jsonArray = new JSONArray(rootObject.get("items").toString());
+            JSONObject rootObject = new JSONObject(IOUtils.toString(httpsURLConnection.getInputStream(), StandardCharsets.UTF_8));
+            JSONArray jsonArray = rootObject.getJSONObject("items").getJSONArray("eng");
 
             StringBuilder stringBuilder = new StringBuilder();
             for (int i = 0; i < jsonArray.length(); i++) {
-                String[] data = jsonArray.getString(i).split("\\|");
+                String[] data = jsonArray.getJSONObject(i).getString("item").split("\\|");
 
                 String originalEngData = data[1];
                 if (cmdContext.getArgs().size() > 1) {
@@ -52,7 +49,7 @@ public class WordCommand implements ICmd {
             if (stringBuilder.toString().length() == 0)
                 cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Word - Error!", "```Java\n" + "E: The word does not exist. Please enter the correct word." + "\n```").build()).queue();
             else
-                cmdContext.getEvent().getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Word! - " + String.join(" ", cmdContext.getArgs()).toLowerCase().replaceAll("[^\uAC00-\uD7A3xfe0-9a-zA-Z\\s]", ""), "```\n" + stringBuilder.toString() + "\n```").build()).queue();
+                cmdContext.getEvent().getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Word! - " + String.join(" ", cmdContext.getArgs()).toLowerCase().replaceAll("[^\uAC00-\uD7A3xfe0-9a-zA-Z\\s]", ""), "```\n" + stringBuilder + "\n```").build()).queue();
         } catch (Exception e) {
             errHandler(e, cmdContext.getChannel());
         }
