@@ -29,13 +29,14 @@ repositories {
         url 'https://duncte123.jfrog.io/artifactory/maven'
     }
 
+    maven { url 'https://jitpack.io' }
     mavenCentral()
 }
 
 dependencies {
-    implementation 'net.lingala.zip4j:zip4j:2.9.0'
-    implementation 'com.sedmelluq:lavaplayer:1.3.78'
-    implementation 'org.jsoup:jsoup:1.14.2'
+    implementation 'net.lingala.zip4j:zip4j:2.10.0'
+    implementation 'com.github.idpromnut:lavaplayer:youtube_details_parse_bug-SNAPSHOT'
+    implementation 'org.jsoup:jsoup:1.14.3'
     implementation 'org.json:json:20210307'
     implementation group: 'net.dv8tion', name: 'JDA', version: '4.3.0_295'
     implementation group: 'com.google.apis', name: 'google-api-services-youtube', version: 'v3-rev222-1.25.0'
@@ -49,4 +50,3 @@ dependencies {
 }
 
 compileJava.options.encoding = 'UTF-8'
-
