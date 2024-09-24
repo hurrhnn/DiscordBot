@@ -18,7 +18,7 @@ public class ServerCommand implements ICmd {
         if(isArgsEmpty(cmdContext.getArgs())) {
             StringBuilder stringBuilder = new StringBuilder();
             manager.getCommands().forEach(command -> stringBuilder.append(command.getHelp()).append("\n"));
-            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Server - Usage", stringBuilder.toString()).build()).queue();
+            cmdContext.getChannel().sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Server - Usage", stringBuilder.toString()).build()).queue();
             return;
         }
         manager.handle(cmdContext.getEvent());

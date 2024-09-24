@@ -10,8 +10,8 @@ public class ResumeCommand implements ICmd {
         GuildMusicManager musicManager = PlayerManager.getInstance().getMusicManager(cmdContext.getGuild());
         if (musicManager.scheduler.player.isPaused()) {
             musicManager.scheduler.player.setPaused(false);
-            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - Resume", "Resume the player.").build()).queue();
-        } else cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - Resume", "Player is already playing.").build()).queue();
+            cmdContext.getChannel().sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Resume", "Resume the player.").build()).queue();
+        } else cmdContext.getChannel().sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Resume", "Player is already playing.").build()).queue();
     }
 
     @Override

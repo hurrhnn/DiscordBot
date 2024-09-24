@@ -1,7 +1,7 @@
 package xyz.hurrhnn.discordbot.util;
 
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.slf4j.Logger;
 import xyz.hurrhnn.discordbot.Main;
 
@@ -18,10 +18,10 @@ import java.util.List;
 public class LogCounter extends Thread {
 
     private final Logger LOGGER;
-    private final GuildMessageReceivedEvent event;
+    private final MessageReceivedEvent event;
     private final String raw;
 
-    public LogCounter(GuildMessageReceivedEvent event, Logger LOGGER) {
+    public LogCounter(MessageReceivedEvent event, Logger LOGGER) {
         this.event = event;
         this.raw = (!event.getMessage().getContentRaw().isEmpty() ? (!event.getMessage().getAttachments().isEmpty() ? (event.getMessage().getContentRaw().replace("\n", " ") + " (FILE_ATTACHMENT)") : (event.getMessage().getContentRaw().replace("\n", " "))) : (!event.getMessage().getAttachments().isEmpty() ? ("(FILE_ATTACHMENT)") : ("(EMPTY_MESSAGE)")));
         this.LOGGER = LOGGER;
@@ -42,7 +42,7 @@ public class LogCounter extends Thread {
 
                     PreparedStatement prepareStatement = Main.con.prepareStatement("insert into log values (?, ?, ?)");
                     Message.Attachment attachment = attachmentList.get(i);
-                    InputStream inputStream = attachment.retrieveInputStream().get();
+                    InputStream inputStream = attachment.getProxy().download().get();
 
                     int b;
                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -58,7 +58,7 @@ public class LogCounter extends Thread {
                     prepareStatement.close();
                 }
             } else {
-                LOGGER.info("[CHAT] [{}][{}][{}]: {}", event.getGuild().getName(), event.getChannel().getName(), event.getAuthor().getAsTag(), raw);
+                LOGGER.info("[CHAT] [{}][{}][{}]: {}", event.getGuild().getName(), event.getChannel().getName(), event.getAuthor().getName(), raw);
 
                 PreparedStatement prepareStatement = Main.con.prepareStatement("insert into log values (?, ?, ?)");
                 prepareStatement.setString(1, MessageFormat.format("{0} [{1}] INFO - {2} [CHAT][{2}][{3}][{4}][{5}]: {6}", dateFormat.format(date), currentThread().getName(), getClass().getSimpleName(), event.getGuild().getName(), event.getChannel().getName(), event.getAuthor().getAsTag(), raw));

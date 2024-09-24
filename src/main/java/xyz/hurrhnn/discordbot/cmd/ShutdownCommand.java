@@ -4,7 +4,7 @@ import me.duncte123.botcommons.BotCommons;
 import me.duncte123.botcommons.messaging.EmbedUtils;
 import net.dv8tion.jda.api.entities.ApplicationInfo;
 import net.dv8tion.jda.api.entities.TeamMember;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.requests.RestAction;
 import org.slf4j.LoggerFactory;
 import xyz.hurrhnn.discordbot.EventListener;
@@ -26,7 +26,7 @@ public class ShutdownCommand implements ICmd{
             if(teamMember.getUser().getId().equals(cmdContext.getAuthor().getId()))
             {
                 LoggerFactory.getLogger(EventListener.class).info("Shutting down...");
-                cmdContext.getChannel().sendMessage(EmbedUtils.embedImageWithTitle("\"Performing Shutting down...\"", null, "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Emoji_u1f44b.svg/1200px-Emoji_u1f44b.svg.png").build()).complete();
+                cmdContext.getChannel().sendMessageEmbeds(EmbedUtils.embedImageWithTitle("\"Performing Shutting down...\"", null, "https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Emoji_u1f44b.svg/1200px-Emoji_u1f44b.svg.png").build()).complete();
 
                 try { Thread.sleep(1000); } catch (InterruptedException e) { e.printStackTrace(); }
 
@@ -36,7 +36,7 @@ public class ShutdownCommand implements ICmd{
                 System.exit(0);
             }
         }
-        cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Oops", "```\nYou are not authorized to execute this command!\n```").build()).queue();
+        cmdContext.getChannel().sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Oops", "```\nYou are not authorized to execute this command!\n```").build()).queue();
     }
 
     @Override

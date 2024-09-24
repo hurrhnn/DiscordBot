@@ -1,7 +1,7 @@
 package xyz.hurrhnn.discordbot.cmd;
 
 import me.duncte123.botcommons.messaging.EmbedUtils;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import xyz.hurrhnn.discordbot.util.Info;
 import java.util.List;
 
@@ -17,7 +17,7 @@ public class HelpCommand implements ICmd {
     public void handle(CmdContext cmdContext) {
         List<String> args;
         args = cmdContext.getArgs();
-        TextChannel textChannel = cmdContext.getChannel();
+        TextChannel textChannel = cmdContext.getChannel().asTextChannel();
 
         if(args.isEmpty())
         {
@@ -36,10 +36,10 @@ public class HelpCommand implements ICmd {
 
         if(cmd == null)
         {
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Nothing found for " + search + "```").build()).queue();
+            textChannel.sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Nothing found for " + search + "```").build()).queue();
             return;
         }
-        textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Usage - " + cmd.getName(), cmd.getHelp()).build()).queue();
+        textChannel.sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Usage - " + cmd.getName(), cmd.getHelp()).build()).queue();
     }
 
     @Override

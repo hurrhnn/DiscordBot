@@ -1,11 +1,9 @@
 package xyz.hurrhnn.discordbot;
 
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.ReadyEvent;
-import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.hurrhnn.discordbot.cmd.MiscellaneousFeature;
@@ -13,7 +11,6 @@ import xyz.hurrhnn.discordbot.util.Info;
 import xyz.hurrhnn.discordbot.util.LogCounter;
 
 import javax.annotation.Nonnull;
-import java.util.Objects;
 
 import static xyz.hurrhnn.discordbot.util.Info.logThreadCount;
 
@@ -27,7 +24,9 @@ public class EventListener extends ListenerAdapter {
     }
 
     @Override
-    public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
+    public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
+        if (!event.isFromGuild()) return;
+
         User user = event.getAuthor();
         if (user.isBot() || event.isWebhookMessage()) return;
         String raw = event.getMessage().getContentRaw();
@@ -45,4 +44,3 @@ public class EventListener extends ListenerAdapter {
         }
     }
 }
-

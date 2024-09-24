@@ -3,7 +3,7 @@ package xyz.hurrhnn.discordbot.cmd;
 import me.duncte123.botcommons.messaging.EmbedUtils;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageHistory;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -17,10 +17,10 @@ public class CleanChatCommand implements ICmd {
     @Override
     public void handle(CmdContext cmdContext) {
 
-        TextChannel textChannel = cmdContext.getChannel();
+        TextChannel textChannel = cmdContext.getChannel().asTextChannel();
 
         if(isArgsEmpty(cmdContext.getArgs())) {
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Wipe - Chat Cleaner", getHelp()).build()).queue();
+            textChannel.sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Wipe - Chat Cleaner", getHelp()).build()).queue();
             return;
         }
 
@@ -29,8 +29,8 @@ public class CleanChatCommand implements ICmd {
             MessageHistory messageHistory = new MessageHistory(textChannel);
             List<Message> messages = messageHistory.retrievePast(count).complete();
             textChannel.deleteMessages(messages).complete();
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Wipe - Deleted " + count + (count == 1 ? " Message!" : " Messages!"), null).setFooter("Requested by " + cmdContext.getEvent().getAuthor().getAsTag(), cmdContext.getEvent().getAuthor().getAvatarUrl()).build()).queue();
-        }catch (Exception e) { errHandler(e, cmdContext.getChannel()); }
+            textChannel.sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Wipe - Deleted " + count + (count == 1 ? " Message!" : " Messages!"), null).setFooter("Requested by " + cmdContext.getEvent().getAuthor().getAsTag(), cmdContext.getEvent().getAuthor().getAvatarUrl()).build()).queue();
+        }catch (Exception e) { errHandler(e, cmdContext.getChannel().asTextChannel()); }
     }
 
     @Override
@@ -58,9 +58,9 @@ public class CleanChatCommand implements ICmd {
         e.printStackTrace(errPrintStream);
         String error = byteArrayOutputStream.toString().split("\n")[0];
 
-        if(error.contains("NumberFormatException") || error.contains("IndexOutOfBoundsException")) textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + "Error: Please enter a valid number." + "\n```").build()).queue();
-        else if (error.contains("Message retrieval limit")) textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + "Error: Please enter a number from 2 to 99." + "\n```").build()).queue();
-        else if (error.contains("PermissionException")) textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + "Error: The bot does NOT have the authority to delete the chat!" + "\n```").build()).queue();
-        else textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + error + "\n```").build()).queue();
+        if(error.contains("NumberFormatException") || error.contains("IndexOutOfBoundsException")) textChannel.sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + "Error: Please enter a valid number." + "\n```").build()).queue();
+        else if (error.contains("Message retrieval limit")) textChannel.sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + "Error: Please enter a number from 2 to 99." + "\n```").build()).queue();
+        else if (error.contains("PermissionException")) textChannel.sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + "Error: The bot does NOT have the authority to delete the chat!" + "\n```").build()).queue();
+        else textChannel.sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + error + "\n```").build()).queue();
     }
 }

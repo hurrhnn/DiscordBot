@@ -1,7 +1,7 @@
 package xyz.hurrhnn.discordbot.cmd;
 
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 public class PingCommand implements ICmd {
     @Override

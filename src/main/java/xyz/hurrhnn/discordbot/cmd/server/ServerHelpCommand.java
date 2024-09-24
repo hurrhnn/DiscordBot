@@ -1,7 +1,7 @@
 package xyz.hurrhnn.discordbot.cmd.server;
 
 import me.duncte123.botcommons.messaging.EmbedUtils;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import xyz.hurrhnn.discordbot.cmd.CmdContext;
 import xyz.hurrhnn.discordbot.cmd.ICmd;
 import xyz.hurrhnn.discordbot.util.Info;
@@ -20,7 +20,7 @@ public class ServerHelpCommand implements ICmd {
     @Override
     public void handle(CmdContext cmdContext) {
         List<String> args = cmdContext.getArgs();
-        AtomicReference<TextChannel> textChannel = new AtomicReference<>(cmdContext.getChannel());
+        AtomicReference<TextChannel> textChannel = new AtomicReference<>(cmdContext.getChannel().asTextChannel());
 
         if(args.isEmpty())
         {
@@ -40,7 +40,7 @@ public class ServerHelpCommand implements ICmd {
             textChannel.get().sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```E: Nothing found for " + search).build()+ "```").queue();
             return;
         }
-        textChannel.get().sendMessage(EmbedUtils.embedMessageWithTitle("Server - Usage", cmd.getHelp()).build()).queue();
+        textChannel.get().sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Server - Usage", cmd.getHelp()).build()).queue();
     }
 
     @Override

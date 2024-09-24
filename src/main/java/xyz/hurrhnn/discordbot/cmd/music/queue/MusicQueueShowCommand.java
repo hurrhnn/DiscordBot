@@ -3,7 +3,7 @@ package xyz.hurrhnn.discordbot.cmd.music.queue;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import me.duncte123.botcommons.messaging.EmbedUtils;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import xyz.hurrhnn.discordbot.cmd.CmdContext;
 import xyz.hurrhnn.discordbot.cmd.ICmd;
 import xyz.hurrhnn.discordbot.cmd.music.GuildMusicManager;
@@ -17,14 +17,14 @@ public class MusicQueueShowCommand implements ICmd {
     @Override
     public void handle(CmdContext cmdContext) {
 
-        TextChannel textChannel = cmdContext.getChannel();
+        TextChannel textChannel = cmdContext.getChannel().asTextChannel();
 
         PlayerManager playerManager = PlayerManager.getInstance();
         GuildMusicManager musicManager = playerManager.getMusicManager(cmdContext.getGuild());
         AudioPlayer player = musicManager.audioPlayer;
 
         if (player.getPlayingTrack() == null) {
-            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - Queue", "```E: There are no songs in the queue to remove.```").build()).queue();
+            cmdContext.getChannel().sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Queue", "```E: There are no songs in the queue to remove.```").build()).queue();
             return;
         }
 
@@ -50,7 +50,7 @@ public class MusicQueueShowCommand implements ICmd {
                     textChannel.sendMessage(selectStr[arg - 1]).queue();
                     textChannel.sendMessage(arg + " / " + ((musicManager.scheduler.getQueue().size() / 10) + 1) + " Page").queue();
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - Queue", "```E: " + arg + " Page does not exist.```").build()).queue();
+                    cmdContext.getChannel().sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Queue", "```E: " + arg + " Page does not exist.```").build()).queue();
                 }
             } else {
                 if (musicManager.scheduler.getQueue().size() <= 0) {
@@ -72,7 +72,7 @@ public class MusicQueueShowCommand implements ICmd {
                 textChannel.sendMessage("The current player's playlist has " + ((musicManager.scheduler.getQueue().size() / 10) + 1) + " pages.").queue();
             }
         } catch (NumberFormatException ignored) {
-            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - Queue", "```E: Couldn't parse the page number. Make sure the page number is correct!```").build()).queue();
+            cmdContext.getChannel().sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Queue", "```E: Couldn't parse the page number. Make sure the page number is correct!```").build()).queue();
         }
     }
 

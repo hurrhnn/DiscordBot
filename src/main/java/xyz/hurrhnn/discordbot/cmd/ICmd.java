@@ -1,6 +1,6 @@
 package xyz.hurrhnn.discordbot.cmd;
 
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 import java.util.Collections;
 import java.util.List;

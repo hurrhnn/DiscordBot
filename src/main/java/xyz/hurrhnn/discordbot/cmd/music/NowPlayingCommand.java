@@ -16,12 +16,12 @@ public class NowPlayingCommand implements ICmd {
         GuildMusicManager musicManager = playerManager.getMusicManager(cmdContext.getGuild());
 
         if (musicManager.scheduler.player.getPlayingTrack() == null) {
-            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - nowPlaying", "```E: Nothing is playing.```").build()).queue();
+            cmdContext.getChannel().sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - nowPlaying", "```E: Nothing is playing.```").build()).queue();
             return;
         }
         AudioTrackInfo info = musicManager.scheduler.player.getPlayingTrack().getInfo();
 
-        cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle(!musicManager.scheduler.player.isPaused() ? "Now Playing: [" + info.title + "]" : "Paused: [" + info.title + "]", musicManager.scheduler.player.isPaused() ? formatTime(musicManager.scheduler.player.getPlayingTrack().getPosition()) + " \u23F8 " + formatTime(musicManager.scheduler.player.getPlayingTrack().getDuration()) : formatTime(musicManager.scheduler.player.getPlayingTrack().getPosition()) + " ▶ " + formatTime(musicManager.scheduler.player.getPlayingTrack().getDuration())).build()).queue();
+        cmdContext.getChannel().sendMessageEmbeds(EmbedUtils.embedMessageWithTitle(!musicManager.scheduler.player.isPaused() ? "Now Playing: [" + info.title + "]" : "Paused: [" + info.title + "]", musicManager.scheduler.player.isPaused() ? formatTime(musicManager.scheduler.player.getPlayingTrack().getPosition()) + " \u23F8 " + formatTime(musicManager.scheduler.player.getPlayingTrack().getDuration()) : formatTime(musicManager.scheduler.player.getPlayingTrack().getPosition()) + " ▶ " + formatTime(musicManager.scheduler.player.getPlayingTrack().getDuration())).build()).queue();
     }
 
     public String formatTime(long timeInMillis) {

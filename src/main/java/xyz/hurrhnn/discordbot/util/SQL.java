@@ -1,9 +1,9 @@
 package xyz.hurrhnn.discordbot.util;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.slf4j.LoggerFactory;
 import xyz.hurrhnn.discordbot.EventListener;
 import xyz.hurrhnn.discordbot.Main;
@@ -82,7 +82,7 @@ public class SQL {
         return null;
     }
 
-    public static String[] getSQLData(Connection connection, String table, String column, @Nullable GuildMessageReceivedEvent event) {
+    public static String[] getSQLData(Connection connection, String table, String column, @Nullable MessageReceivedEvent event) {
 
         try {
             String query = "select * from " + table;
@@ -100,7 +100,7 @@ public class SQL {
         return null;
     }
 
-    public static void insertSQLData(Connection connection, String table, String[] data, GuildMessageReceivedEvent event) {
+    public static void insertSQLData(Connection connection, String table, String[] data, MessageReceivedEvent event) {
 
         try {
             for (int i = 0; i < data.length; i++) data[i] = data[i].replace("'", "''").replace("\"", "\"\"");
@@ -119,7 +119,7 @@ public class SQL {
         }
     }
 
-    public static void updateSQLData(Connection connection, String table, String column, String columnValue, String condition, String conditionValue, GuildMessageReceivedEvent event) {
+    public static void updateSQLData(Connection connection, String table, String column, String columnValue, String condition, String conditionValue, MessageReceivedEvent event) {
 
         try {
             Statement statement = connection.createStatement();
@@ -139,14 +139,14 @@ public class SQL {
 //        }
 //    }
 
-    public static void errSQLConnection(String errMessage, GuildMessageReceivedEvent event) {
+    public static void errSQLConnection(String errMessage, MessageReceivedEvent event) {
 
         Main.con = SQL.initSQLConnection("discordjavabot");
         try {
             if(Main.con != null && !Main.con.isClosed()) return;
         }catch (SQLException ignored){ }
 
-        TextChannel textChannel = event.getChannel();
+        MessageChannel textChannel = event.getChannel();
         User user = event.getAuthor();
 
         EmbedBuilder embedBuilder = new EmbedBuilder();
@@ -157,7 +157,7 @@ public class SQL {
         LoggerFactory.getLogger(EventListener.class).error("DB서버와 통신 중 오류가 발생했습니다!");
         LoggerFactory.getLogger(EventListener.class).error("오류: {}", errMessage);
 
-        textChannel.sendMessage(embedBuilder.build()).queue();
+        textChannel.sendMessageEmbeds(embedBuilder.build()).queue();
     }
 
     public static void finSQLConnection(Connection connection) {

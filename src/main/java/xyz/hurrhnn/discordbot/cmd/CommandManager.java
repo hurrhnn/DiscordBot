@@ -2,7 +2,7 @@ package xyz.hurrhnn.discordbot.cmd;
 
 import me.duncte123.botcommons.messaging.EmbedUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import xyz.hurrhnn.discordbot.cmd.server.ServerCommand;
 import xyz.hurrhnn.discordbot.util.Info;
 
@@ -55,7 +55,7 @@ public class CommandManager extends Thread {
         return null;
     }
 
-    public void handle(GuildMessageReceivedEvent event) {
+    public void handle(MessageReceivedEvent event) {
 
         EmbedUtils.setEmbedBuilder(
                 () -> new EmbedBuilder()
@@ -64,7 +64,7 @@ public class CommandManager extends Thread {
         );
 
         if (event.getMessage().getContentRaw().equals("?prefix"))
-            event.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Prefix", "The prefix " + event.getJDA().getSelfUser().getName() + " bot uses on this server: `" + Info.getPrefix(event) + "`").build()).queue();
+            event.getChannel().sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Prefix", "The prefix " + event.getJDA().getSelfUser().getName() + " bot uses on this server: `" + Info.getPrefix(event) + "`").build()).queue();
 
         String[] split = event.getMessage().getContentRaw()
                 .replaceFirst("(?i)" + Pattern.quote(Info.getPrefix(event)), "")

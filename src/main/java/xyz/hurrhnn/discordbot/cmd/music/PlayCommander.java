@@ -5,8 +5,8 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.SearchResult;
 import me.duncte123.botcommons.messaging.EmbedUtils;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import xyz.hurrhnn.discordbot.Main;
 import xyz.hurrhnn.discordbot.util.HTTPMethods;
 import xyz.hurrhnn.discordbot.util.SQL;
@@ -22,7 +22,7 @@ import java.util.Objects;
 public class PlayCommander {
     public final YouTube youTube;
 
-    public PlayCommander(List<String> args, GuildMessageReceivedEvent event, String mp3Name) {
+    public PlayCommander(List<String> args, MessageReceivedEvent event, String mp3Name) {
         YouTube temp = null;
         try {
             temp = new YouTube.Builder(
@@ -38,9 +38,9 @@ public class PlayCommander {
         handle(args, event, mp3Name);
     }
 
-    public void handle(List<String> args, GuildMessageReceivedEvent event, String mp3Name) {
+    public void handle(List<String> args, MessageReceivedEvent event, String mp3Name) {
 
-        TextChannel channel = event.getChannel();
+        TextChannel channel = event.getChannel().asTextChannel();
         StringBuilder input = new StringBuilder();
 
         for (int i = 0; i < args.toArray().length; i++)
@@ -49,7 +49,7 @@ public class PlayCommander {
         if (mp3Name != null) {
             if(!mp3Name.contains(".mp3")) mp3Name += ".mp3";
             if(HTTPMethods.GET("https://hurrhnn.xyz/downloadMP3fromDB.php?mp3=" + mp3Name, null).contains("ERROR")) {
-                channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Play!", "```E: No mp3 results were found on mp3 list.```").build()).queue();
+                channel.sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Play!", "```E: No mp3 results were found on mp3 list.```").build()).queue();
                 return;
             }
             input = new StringBuilder().append("https://hurrhnn.xyz/MP3/").append(mp3Name);
@@ -57,14 +57,14 @@ public class PlayCommander {
             if (!isURL(input.toString().trim())) {
                 String ytSearched = searchYoutube(input.toString(), event);
                 if (ytSearched == null) {
-                    channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Play!", "```E: No results were found on YouTube.```").build()).queue();
+                    channel.sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Play!", "```E: No results were found on YouTube.```").build()).queue();
                     return;
                 }
                 input = new StringBuilder(ytSearched);
             }
         }
         PlayerManager manager = PlayerManager.getInstance();
-        manager.loadAndPlay(event.getChannel(), input.toString().trim(), mp3Name);
+        manager.loadAndPlay(event.getChannel().asTextChannel(), input.toString().trim(), mp3Name);
     }
 
     private boolean isURL(String URL) {
@@ -77,7 +77,7 @@ public class PlayCommander {
     }
 
     @Nullable
-    public String searchYoutube(String input, GuildMessageReceivedEvent event) {
+    public String searchYoutube(String input, MessageReceivedEvent event) {
         try {
             List<SearchResult> results = youTube.search()
                     .list("id,snippet")
@@ -96,12 +96,9 @@ public class PlayCommander {
         } catch (Exception e) {
             PrintStream errPrintStream = null;
             ByteArrayOutputStream err = new ByteArrayOutputStream();
-            try {
-                errPrintStream = new PrintStream(err, true, StandardCharsets.UTF_8.name());
-            } catch (UnsupportedEncodingException ignored) {
-            }
+            errPrintStream = new PrintStream(err, true, StandardCharsets.UTF_8);
             e.printStackTrace(errPrintStream);
-            event.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + "E: " + err.toString().split("\n")[0] + "\n```").build()).queue();
+            event.getChannel().sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + "E: " + err.toString().split("\n")[0] + "\n```").build()).queue();
 
         }
         return null;

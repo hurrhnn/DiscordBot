@@ -1,6 +1,6 @@
 package xyz.hurrhnn.discordbot.cmd.music;
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import xyz.hurrhnn.discordbot.cmd.*;
 import xyz.hurrhnn.discordbot.util.Info;
 
@@ -57,7 +57,7 @@ public class MusicCommandManager extends Thread{
         return commands;
     }
 
-    public void handle(GuildMessageReceivedEvent event)
+    public void handle(MessageReceivedEvent event)
     {
         String[] split = event.getMessage().getContentRaw()
                 .replaceFirst("(?-i)" + Pattern.quote(Info.getPrefix(event)), "")

@@ -1,6 +1,6 @@
 package xyz.hurrhnn.discordbot.cmd;
 
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import oshi.SystemInfo;
 import oshi.hardware.HardwareAbstractionLayer;
 
@@ -14,7 +14,7 @@ import java.util.List;
 public class InfoCommand implements ICmd{
     @Override
     public void handle(CmdContext cmdContext) {
-        TextChannel textChannel = cmdContext.getChannel();
+        TextChannel textChannel = cmdContext.getChannel().asTextChannel();
         SystemInfo systemInfo = new SystemInfo();
         HardwareAbstractionLayer hal = systemInfo.getHardware();
 

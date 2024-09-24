@@ -12,7 +12,7 @@ public class DisconnectCommand implements ICmd {
     @Override
     public void handle(CmdContext cmdContext) {
         try {
-            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Server - Connect", "```Disconnected from " + ServerStateSocket.clientSocket.getRemoteSocketAddress().toString().substring(1) + " Server.```").build()).queue();
+            cmdContext.getChannel().sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Server - Connect", "```Disconnected from " + ServerStateSocket.clientSocket.getRemoteSocketAddress().toString().substring(1) + " Server.```").build()).queue();
             ServerStateSocket.clientSocket.close();
         }catch (IOException ignored)
         {

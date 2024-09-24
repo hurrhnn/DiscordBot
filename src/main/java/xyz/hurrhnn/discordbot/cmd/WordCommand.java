@@ -1,10 +1,11 @@
 package xyz.hurrhnn.discordbot.cmd;
 
 import me.duncte123.botcommons.messaging.EmbedUtils;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
@@ -47,11 +48,11 @@ public class WordCommand implements ICmd {
             }
 
             if (stringBuilder.toString().length() == 0)
-                cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Word - Error!", "```Java\n" + "E: The word does not exist. Please enter the correct word." + "\n```").build()).queue();
+                cmdContext.getChannel().sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Word - Error!", "```Java\n" + "E: The word does not exist. Please enter the correct word." + "\n```").build()).queue();
             else
-                cmdContext.getEvent().getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Word! - " + String.join(" ", cmdContext.getArgs()).toLowerCase().replaceAll("[^\uAC00-\uD7A3xfe0-9a-zA-Z\\s]", ""), "```\n" + stringBuilder + "\n```").build()).queue();
+                cmdContext.getEvent().getChannel().sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Word! - " + String.join(" ", cmdContext.getArgs()).toLowerCase().replaceAll("[^\uAC00-\uD7A3xfe0-9a-zA-Z\\s]", ""), "```\n" + stringBuilder + "\n```").build()).queue();
         } catch (Exception e) {
-            errHandler(e, cmdContext.getChannel());
+            errHandler(e, cmdContext.getChannel().asTextChannel());
         }
     }
 
@@ -64,7 +65,7 @@ public class WordCommand implements ICmd {
         } catch (UnsupportedEncodingException ignored) {
         }
         e.printStackTrace(errPrintStream);
-        textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + err.toString().split("\n")[0] + "\n```").build()).queue();
+        textChannel.sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + err.toString().split("\n")[0] + "\n```").build()).queue();
     }
 
     @Override

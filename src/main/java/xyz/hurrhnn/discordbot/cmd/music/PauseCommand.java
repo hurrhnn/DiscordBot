@@ -11,8 +11,8 @@ public class PauseCommand implements ICmd {
 
         if (!musicManager.scheduler.player.isPaused()) {
             musicManager.scheduler.player.setPaused(true);
-            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - Pause", "Pause the player.").build()).queue();
-        } else cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - Pause", "```E: Player is already paused.```").build()).queue();
+            cmdContext.getChannel().sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Pause", "Pause the player.").build()).queue();
+        } else cmdContext.getChannel().sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Pause", "```E: Player is already paused.```").build()).queue();
     }
 
     @Override

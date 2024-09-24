@@ -1,6 +1,6 @@
 package xyz.hurrhnn.discordbot.cmd.music.queue;
 
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import xyz.hurrhnn.discordbot.cmd.CmdContext;
 import xyz.hurrhnn.discordbot.cmd.ICmd;
 import xyz.hurrhnn.discordbot.util.Info;
@@ -44,7 +44,7 @@ public class MusicQueueCommandManager extends Thread{
         return commands;
     }
 
-    public void handle(GuildMessageReceivedEvent event)
+    public void handle(MessageReceivedEvent event)
     {
         String[] split = event.getMessage().getContentRaw()
                 .replaceFirst("(?-i)" + Pattern.quote(Info.getPrefix(event)), "")

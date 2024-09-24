@@ -9,6 +9,7 @@ import me.duncte123.botcommons.messaging.EmbedUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import org.apache.commons.text.StringEscapeUtils;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -78,7 +79,8 @@ public class CaptionCommand implements ICmd {
                         messageRestAction = cmdContext.getChannel().sendMessageEmbeds(embedBuilder.build());
                         message = messageRestAction.complete();
                     } else
-                        cmdContext.getChannel().editMessageById(message.getId(), embedBuilder.setDescription("```\n| " + StringEscapeUtils.unescapeHtml4(captionMap.get(currentTime)) + " |\n```").build()).queue();
+
+                        cmdContext.getChannel().asTextChannel().editMessageById(message.getId(), MessageEditData.fromEmbeds(embedBuilder.setDescription("```\n| " + StringEscapeUtils.unescapeHtml4(captionMap.get(currentTime)) + " |\n```").build())).queue();
                     captionMap.remove(currentTime);
                 } else if (captionMap.size() == 0) break;
                 Thread.sleep(1);

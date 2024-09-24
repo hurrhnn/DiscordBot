@@ -1,6 +1,7 @@
 package xyz.hurrhnn.discordbot.cmd.server;
 
 import me.duncte123.botcommons.messaging.EmbedUtils;
+import net.dv8tion.jda.api.utils.FileUpload;
 import xyz.hurrhnn.discordbot.cmd.CmdContext;
 import xyz.hurrhnn.discordbot.cmd.ICmd;
 
@@ -10,9 +11,9 @@ public class ServerStatusCommand implements ICmd {
     @Override
     public void handle(CmdContext cmdContext) {
         if(ServerStateSocket.clientSocket == null)
-            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Server - Connect", "```E: Can't connect the remote server.```").build()).queue();
+            cmdContext.getChannel().sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Server - Connect", "```E: Can't connect the remote server.```").build()).queue();
         else if(ServerStateSocket.clientSocket.isClosed())
-            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Server - Connect", "```E: Connection closed with the server.```").build()).queue();
+            cmdContext.getChannel().sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Server - Connect", "```E: Connection closed with the server.```").build()).queue();
         else
         {
             try {
@@ -40,7 +41,7 @@ public class ServerStatusCommand implements ICmd {
                     fileOutputStream.close();
                     System.out.println(file.length());
                 }
-                cmdContext.getChannel().sendFile(file).queue();
+                cmdContext.getChannel().asTextChannel().sendFiles(FileUpload.fromData(file)).queue();
             }catch (IOException e)
             { e.printStackTrace();}
         }

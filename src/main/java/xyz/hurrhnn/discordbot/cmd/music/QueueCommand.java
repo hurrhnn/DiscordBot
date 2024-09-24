@@ -22,7 +22,7 @@ public class QueueCommand implements ICmd {
         if (argsList.size() < 3) {
             StringBuilder stringBuilder = new StringBuilder();
             manager.getCommands().forEach(command -> stringBuilder.append(command.getHelp()).append("\n"));
-            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - Queue Usage", stringBuilder.toString()).build()).queue();
+            cmdContext.getChannel().sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Queue Usage", stringBuilder.toString()).build()).queue();
             return;
         }
         manager.handle(cmdContext.getEvent());

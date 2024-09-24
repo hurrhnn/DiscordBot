@@ -2,9 +2,9 @@ package xyz.hurrhnn.discordbot.cmd;
 
 import me.duncte123.botcommons.messaging.EmbedUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.VoiceChannel;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -19,7 +19,7 @@ public class MemeCommand implements ICmd {
 
     @Override
     public void handle(CmdContext cmdContext) {
-        final TextChannel textChannel = cmdContext.getChannel();
+        final TextChannel textChannel = cmdContext.getChannel().asTextChannel();
         String subReddit = "ProgrammerHumor";
         try {
             JSONObject childDataObject = retrieveAndParseJSON(subReddit);
@@ -44,8 +44,8 @@ public class MemeCommand implements ICmd {
             SQL.insertSQLData(Main.con, "saved_meme", (image + "\u200B" + cmdContext.getGuild().getName() + "\u200B" + cmdContext.getGuild().getId()).split("\u200B"), cmdContext.getEvent());
 
             EmbedBuilder embedBuilder = EmbedUtils.embedImageWithTitle(title, url, image);
-            textChannel.sendMessage(embedBuilder.build()).queue();
-        }catch (Exception e) { errHandler(e, cmdContext.getChannel()); }
+            textChannel.sendMessageEmbeds(embedBuilder.build()).queue();
+        }catch (Exception e) { errHandler(e, cmdContext.getChannel().asTextChannel()); }
     }
 
     public JSONObject retrieveAndParseJSON(String subReddit) throws Exception {
@@ -66,7 +66,7 @@ public class MemeCommand implements ICmd {
     }
 
 
-    public JSONObject reloadChildData(String subReddit, GuildMessageReceivedEvent event) {
+    public JSONObject reloadChildData(String subReddit, MessageReceivedEvent event) {
         try {
             JSONObject childDataObject = retrieveAndParseJSON(subReddit);
             boolean isSavedURI = false;
@@ -104,6 +104,6 @@ public class MemeCommand implements ICmd {
     {
         StringBuilder errString = new StringBuilder();
         for(StackTraceElement stackTraceElement : e.getStackTrace()) { errString.append(stackTraceElement.toString()).append("\n"); }
-        textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + errString.toString() + "\n```").build()).queue();
+        textChannel.sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + errString.toString() + "\n```").build()).queue();
     }
 }

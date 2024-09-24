@@ -5,15 +5,14 @@ import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
-import com.sedmelluq.discord.lavaplayer.source.nico.NicoAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import dev.lavalink.youtube.YoutubeAudioSourceManager;
 import me.duncte123.botcommons.messaging.EmbedUtils;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,12 +25,15 @@ public class PlayerManager {
     private PlayerManager() {
         this.musicManagers = new HashMap<>();
         this.audioPlayerManager = new DefaultAudioPlayerManager();
-        this.audioPlayerManager.registerSourceManager(new NicoAudioSourceManager("20sunrin022@sunrint.hs.kr", new String(Base64.getDecoder().decode("b3IwNDEy"))));
+        YoutubeAudioSourceManager ytSourceManager = new dev.lavalink.youtube.YoutubeAudioSourceManager();
+        this.audioPlayerManager.registerSourceManager(ytSourceManager);
+//        this.audioPlayerManager.registerSourceManager(new NicoAudioSourceManager("20sunrin022@sunrint.hs.kr", new String(Base64.getDecoder().decode("6 letters"))));
 
         this.audioPlayerManager.getConfiguration().setResamplingQuality(AudioConfiguration.ResamplingQuality.HIGH);
         this.audioPlayerManager.getConfiguration().setOpusEncodingQuality(AudioConfiguration.OPUS_QUALITY_MAX);
 
-        AudioSourceManagers.registerRemoteSources(this.audioPlayerManager);
+        AudioSourceManagers.registerRemoteSources(this.audioPlayerManager,
+                com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager.class);
         AudioSourceManagers.registerLocalSource(this.audioPlayerManager);
     }
 
@@ -51,12 +53,12 @@ public class PlayerManager {
             public void trackLoaded(AudioTrack track) {
                 try {
                     if (mp3Name != null)
-                        channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Play", "MP3 Music: [" + mp3Name + "](" + trackUrl + ")\nadded to queue.").build()).queue();
+                        channel.sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Play", "MP3 Music: [" + mp3Name + "](" + trackUrl + ")\nadded to queue.").build()).queue();
                     else
-                        channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Play", "[" + track.getInfo().title + "](" + trackUrl + ")\nadded to queue.").setThumbnail("https://i.ytimg.com/vi/" + trackUrl.substring(trackUrl.trim().indexOf("watch?v="), trackUrl.indexOf("watch?v=") + 19).replace("watch?v=", "") + "/0.jpg").build()).queue();
+                        channel.sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Play", "[" + track.getInfo().title + "](" + trackUrl + ")\nadded to queue.").setThumbnail("https://i.ytimg.com/vi/" + trackUrl.substring(trackUrl.trim().indexOf("watch?v="), trackUrl.indexOf("watch?v=") + 19).replace("watch?v=", "") + "/0.jpg").build()).queue();
                     musicManager.scheduler.queue(track);
                 } catch (StringIndexOutOfBoundsException ignored) {
-                    channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Play", "[" + track.getInfo().title + "](" + trackUrl + ")\nadded to queue.").setThumbnail("https://twemoji.maxcdn.com/v/13.0.1/72x72/1f3b5.png").build()).queue();
+                    channel.sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Play", "[" + track.getInfo().title + "](" + trackUrl + ")\nadded to queue.").setThumbnail("https://twemoji.maxcdn.com/v/13.0.1/72x72/1f3b5.png").build()).queue();
                     musicManager.scheduler.queue(track);
                 }
             }
@@ -64,18 +66,18 @@ public class PlayerManager {
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
                 final List<AudioTrack> tracks = playlist.getTracks();
-                channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Play", "[" + playlist.getName() + "](" + playlist.getTracks().get(0).getInfo().uri + ")\nadded to queue.").setThumbnail("https://i.ytimg.com/vi/" + trackUrl.substring(trackUrl.trim().indexOf("watch?v="), trackUrl.trim().indexOf('&')).replace("watch?v=", "") + "/0.jpg").build()).queue();
+                channel.sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Play", "[" + playlist.getName() + "](" + playlist.getTracks().get(0).getInfo().uri + ")\nadded to queue.").setThumbnail("https://i.ytimg.com/vi/" + trackUrl.substring(trackUrl.trim().indexOf("watch?v="), trackUrl.trim().indexOf('&')).replace("watch?v=", "") + "/0.jpg").build()).queue();
                 for (final AudioTrack track : tracks) musicManager.scheduler.queue(track);
             }
 
             @Override
             public void noMatches() {
-                channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Play", "```E: Unable to play - No matches found on Youtube." + trackUrl + "```").build()).queue();
+                channel.sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Play", "```E: Unable to play - No matches found on Youtube." + trackUrl + "```").build()).queue();
             }
 
             @Override
             public void loadFailed(FriendlyException exception) {
-                channel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Play", "```E: Unable to play - " + exception.getMessage() + "```").build()).queue();
+                channel.sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Play", "```E: Unable to play - " + exception.getMessage() + "```").build()).queue();
             }
         });
     }

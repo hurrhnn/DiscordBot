@@ -2,9 +2,11 @@ package xyz.hurrhnn.discordbot.cmd;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.requests.RestAction;
+import net.dv8tion.jda.api.utils.FileUpload;
+import net.dv8tion.jda.api.utils.messages.MessageEditData;
 import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.model.ZipParameters;
 import net.lingala.zip4j.model.enums.CompressionLevel;
@@ -27,7 +29,7 @@ public class MP3Command implements ICmd {
     public void handle(CmdContext cmdContext) {
         String[] args = cmdContext.getArgs().toArray(new String[0]);
         Message message = cmdContext.getMessage();
-        TextChannel textChannel = cmdContext.getChannel();
+        TextChannel textChannel = cmdContext.getChannel().asTextChannel();
         EmbedBuilder eb = new EmbedBuilder();
         User user = cmdContext.getAuthor();
         try {
@@ -44,11 +46,11 @@ public class MP3Command implements ICmd {
                     eb.setTitle("오류!");
                     eb.setDescription("```\n음악 파일이 필요합니다!\n```");
                     eb.setFooter("요청자 : " + user.getAsTag(), user.getAvatarUrl());
-                    textChannel.sendMessage(eb.build()).queue();
+                    textChannel.sendMessageEmbeds(eb.build()).queue();
                     return;
                 }
                 try {
-                    InputStream attachmentInputStream = attachment.retrieveInputStream().get();
+                    InputStream attachmentInputStream = attachment.getProxy().download().get();
                     StringBuilder fileSignature = new StringBuilder();
 
                     for (int i = 0; i < 3; i++) {
@@ -84,13 +86,13 @@ public class MP3Command implements ICmd {
                         eb.setTitle("오류!");
                         eb.setDescription("```Java\nMP3 파일이 아닙니다!\n```");
                         eb.setFooter("요청자 : " + user.getAsTag(), user.getAvatarUrl());
-                        textChannel.sendMessage(eb.build()).queue();
+                        textChannel.sendMessageEmbeds(eb.build()).queue();
                     }
                 } catch (Exception ignored) {
                     eb.setTitle("오류!");
                     eb.setDescription("```\n파일을 받을 수 없습니다!\n```");
                     eb.setFooter("요청자 : " + user.getAsTag(), user.getAvatarUrl());
-                    textChannel.sendMessage(eb.build()).queue();
+                    textChannel.sendMessageEmbeds(eb.build()).queue();
                 }
 
             } else if (args[0].equalsIgnoreCase("download") || args[0].equalsIgnoreCase("down")) {
@@ -100,7 +102,7 @@ public class MP3Command implements ICmd {
                     eb.setTitle("오류!");
                     eb.setDescription("```Java\nMP3 파일의 번호를 입력하지 않았습니다!\n```");
                     eb.setFooter("요청자 : " + user.getAsTag(), user.getAvatarUrl());
-                    textChannel.sendMessage(eb.build()).queue();
+                    textChannel.sendMessageEmbeds(eb.build()).queue();
                     return;
                 }
 
@@ -110,7 +112,7 @@ public class MP3Command implements ICmd {
                     eb.setTitle("오류!");
                     eb.setDescription("```Java\n파일 번호에 일치하는 MP3 파일이 없습니다!\n```");
                     eb.setFooter("요청자 : " + user.getAsTag(), user.getAvatarUrl());
-                    textChannel.sendMessage(eb.build()).queue();
+                    textChannel.sendMessageEmbeds(eb.build()).queue();
                     return;
                 }
 
@@ -136,7 +138,7 @@ public class MP3Command implements ICmd {
                             eb.setTitle("경고!");
                             eb.setDescription("```Java\n전송하려는 파일이 너무 큽니다! (분할 압축 후 전송)\n```");
                             eb.setFooter("요청자 : " + user.getAsTag(), user.getAvatarUrl());
-                            textChannel.editMessageById(messageId, eb.build()).queue();
+                            textChannel.editMessageById(messageId, MessageEditData.fromEmbeds(eb.build())).queue();
 
                             ZipParameters zipParameters = new ZipParameters();
                             zipParameters.setCompressionMethod(CompressionMethod.DEFLATE);
@@ -152,7 +154,7 @@ public class MP3Command implements ICmd {
                             mp3Zip.createSplitZipFile(Collections.singletonList(mp3File), zipParameters, true,8388300);
                             for(File splitMP3ZipFile : mp3Zip.getSplitZipFiles())
                             {
-                                textChannel.sendFile(splitMP3ZipFile).complete();
+                                textChannel.sendFiles(FileUpload.fromData(splitMP3ZipFile)).complete();
                                 splitMP3ZipFile.delete();
                             }
                             textChannel.deleteMessageById(messageId).queue();
@@ -160,7 +162,7 @@ public class MP3Command implements ICmd {
                             return;
                         }
 
-                        textChannel.sendFile(inputStream, mp3Name).complete();
+                        textChannel.sendFiles(FileUpload.fromData(inputStream, mp3Name)).complete();
                         textChannel.deleteMessageById(messageId).queue();
                     }
 
@@ -179,7 +181,7 @@ public class MP3Command implements ICmd {
                     eb.setTitle("Music file list: ");
                     eb.setDescription("```\n" + "DB에 저장된 음악 파일이 없습니다!" + "\n```");
                     eb.setFooter("요청자 : " + user.getAsTag(), user.getAvatarUrl());
-                    textChannel.sendMessage(eb.build()).queue();
+                    textChannel.sendMessageEmbeds(eb.build()).queue();
                 }
                 int cnt = 0;
                 StringBuilder stringBuilder = new StringBuilder();
@@ -189,7 +191,7 @@ public class MP3Command implements ICmd {
                 eb.setTitle("Music file list: ");
                 eb.setDescription("```\n" + stringBuilder.toString() + "\n```");
                 eb.setFooter("요청자 : " + user.getAsTag(), user.getAvatarUrl());
-                textChannel.sendMessage(eb.build()).queue();
+                textChannel.sendMessageEmbeds(eb.build()).queue();
             }
         } catch (ArrayIndexOutOfBoundsException ignored) {
             eb.setTitle("사용법");
@@ -200,7 +202,7 @@ public class MP3Command implements ICmd {
                     "!!m p mp3/[filename]\n" +
                     "[filename] - 재생할 파일 이름을 입력헙나다.\n" + "\n```");
             eb.setFooter("요청자 : " + user.getAsTag(), user.getAvatarUrl());
-            textChannel.sendMessage(eb.build()).queue();
+            textChannel.sendMessageEmbeds(eb.build()).queue();
         }
     }
 

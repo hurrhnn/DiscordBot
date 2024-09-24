@@ -15,7 +15,7 @@ public class StopCommand implements ICmd {
         musicManager.scheduler.getQueue().clear();
         musicManager.scheduler.player.stopTrack();
         musicManager.scheduler.player.setPaused(false);
-        cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - Stop", "Stop the music and clear the music queue.").build()).queue();
+        cmdContext.getChannel().sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Stop", "Stop the music and clear the music queue.").build()).queue();
     }
 
     @Override

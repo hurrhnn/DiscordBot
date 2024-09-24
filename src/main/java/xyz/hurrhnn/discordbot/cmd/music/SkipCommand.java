@@ -3,7 +3,9 @@ package xyz.hurrhnn.discordbot.cmd.music;
 import me.duncte123.botcommons.messaging.EmbedUtils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 import xyz.hurrhnn.discordbot.cmd.CmdContext;
 import xyz.hurrhnn.discordbot.cmd.ICmd;
 
@@ -14,18 +16,18 @@ public class SkipCommand implements ICmd {
     @Override
     public void handle(CmdContext cmdContext) {
 
-        TextChannel textChannel = cmdContext.getChannel();
+        TextChannel textChannel = cmdContext.getChannel().asTextChannel();
         PlayerManager playerManager = PlayerManager.getInstance();
         GuildMusicManager musicManager = playerManager.getMusicManager(cmdContext.getGuild());
 
         if (musicManager.scheduler.player.getPlayingTrack() == null) {
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Skip", "```E: There are no songs in the queue to skip.```").build()).queue();
+            textChannel.sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Skip", "```E: There are no songs in the queue to skip.```").build()).queue();
             return;
         }
 
         if(musicManager.scheduler.isLoopQueue)
         {
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Skip", "```E: Loop mode is set on the player.```").build()).queue();
+            textChannel.sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Skip", "```E: Loop mode is set on the player.```").build()).queue();
             return;
         }
 
@@ -40,17 +42,17 @@ public class SkipCommand implements ICmd {
         musicManager = playerManager.getMusicManager(cmdContext.getGuild());
 
         if (isAuthorAdministrator(cmdContext.getMember())) {
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Skip", "You are the administrator of this server.\nSkip [" + musicManager.scheduler.player.getPlayingTrack().getInfo().title + "](" + musicManager.scheduler.player.getPlayingTrack().getInfo().uri + ") without voting.").build()).queue();
+            textChannel.sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Skip", "You are the administrator of this server.\nSkip [" + musicManager.scheduler.player.getPlayingTrack().getInfo().title + "](" + musicManager.scheduler.player.getPlayingTrack().getInfo().uri + ") without voting.").build()).queue();
             musicManager.scheduler.nextTrack();
             GuildMusicInfo.SetIsGuildSkipRequestDelayedMap(textChannel.getId(), false);
             return;
         }
 
-        MessageAction messageAction = textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Skip", "Skip\n[" + musicManager.scheduler.player.getPlayingTrack().getInfo().title + "](" + musicManager.scheduler.player.getPlayingTrack().getInfo().uri + ")?").build());
-        Message embedMessage = messageAction.complete();
+        MessageCreateAction messageCreateAction = textChannel.sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Skip", "Skip\n[" + musicManager.scheduler.player.getPlayingTrack().getInfo().title + "](" + musicManager.scheduler.player.getPlayingTrack().getInfo().uri + ")?").build());
+        Message embedMessage = messageCreateAction.complete();
         String embedMessageID = embedMessage.getId();
-        embedMessage.addReaction("U+2B55").complete();
-        embedMessage.addReaction("U+274C").complete();
+        embedMessage.addReaction(Emoji.fromUnicode("U+2B55")).complete();
+        embedMessage.addReaction(Emoji.fromUnicode("U+274C")).complete();
 
         try {
             Thread.sleep(3500);
@@ -71,13 +73,13 @@ public class SkipCommand implements ICmd {
                     break;
             }
         }
-        if (O == X && O + X == 0) textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Skip", "No one voted. The song will not be skipped.").build()).queue();
-        else if (O == X) textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Skip", "There's a lot of course! The song will not be skipped.").build()).queue();
+        if (O == X && O + X == 0) textChannel.sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Skip", "No one voted. The song will not be skipped.").build()).queue();
+        else if (O == X) textChannel.sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Skip", "There's a lot of course! The song will not be skipped.").build()).queue();
         else if (O > X) {
-            textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Skip", "Skipped\n[" + musicManager.scheduler.player.getPlayingTrack().getInfo().title + "](" + musicManager.scheduler.player.getPlayingTrack().getInfo().uri + ") by the vote.").build()).queue();
+            textChannel.sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Skip", "Skipped\n[" + musicManager.scheduler.player.getPlayingTrack().getInfo().title + "](" + musicManager.scheduler.player.getPlayingTrack().getInfo().uri + ") by the vote.").build()).queue();
             musicManager.scheduler.nextTrack();
             GuildMusicInfo.SetIsGuildSkipRequestDelayedMap(textChannel.getId(), false);
-        } else textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("Music - Skip", "There are many opinions that we shouldn't skip it! Cancel skipping the song.").build()).queue();
+        } else textChannel.sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Skip", "There are many opinions that we shouldn't skip it! Cancel skipping the song.").build()).queue();
         GuildMusicInfo.SetIsGuildSkipRequestDelayedMap(textChannel.getId(), false);
     }
 

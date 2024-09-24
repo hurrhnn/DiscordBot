@@ -17,7 +17,7 @@ public class MusicCommand implements ICmd {
         argsList.add(0, "!!music");
 
         if (argsList.size() < 2) {
-            cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Music - Usage", getHelp()).build()).queue();
+            cmdContext.getChannel().sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Music - Usage", getHelp()).build()).queue();
             return;
         }
         manager.handle(cmdContext.getEvent());

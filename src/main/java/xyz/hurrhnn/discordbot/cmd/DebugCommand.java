@@ -3,11 +3,11 @@ package xyz.hurrhnn.discordbot.cmd;
 import groovy.lang.GroovyShell;
 import me.duncte123.botcommons.messaging.EmbedUtils;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.requests.RestAction;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
@@ -52,14 +52,14 @@ public class DebugCommand implements ICmd {
 
                         String script = imports + cmdContext.getEvent().getMessage().getContentRaw().split("\\s+", 2)[1];
                         Object out = engine.evaluate(script);
-                        cmdContext.getEvent().getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Eval!", "```Java\n" + (out == null ? "Executed Successfully without Error!\n```" : "Result: \"" + out.toString() + "\"" + "\n```")).build()).queue();
+                        cmdContext.getEvent().getChannel().sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Eval!", "```Java\n" + (out == null ? "Executed Successfully without Error!\n```" : "Result: \"" + out.toString() + "\"" + "\n```")).build()).queue();
                         return;
                     }catch (Exception e) {
-                        errHandler(e, cmdContext.getChannel());
+                        errHandler(e, cmdContext.getChannel().asTextChannel());
                         return;
                     }
                 }
-                cmdContext.getChannel().sendMessage(EmbedUtils.embedMessageWithTitle("Debug", "```Java\nThe number of Threads: " + Thread.activeCount() + "\n```").build()).queue();
+                cmdContext.getChannel().sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("Debug", "```Java\nThe number of Threads: " + Thread.activeCount() + "\n```").build()).queue();
                 return;
             }
         }
@@ -80,12 +80,9 @@ public class DebugCommand implements ICmd {
     public void errHandler(Exception e, TextChannel textChannel) {
         PrintStream errPrintStream = null;
         ByteArrayOutputStream err = new ByteArrayOutputStream();
-        try {
-            errPrintStream = new PrintStream(err, true, StandardCharsets.UTF_8.name());
-        } catch (UnsupportedEncodingException ignored) {
-        }
+        errPrintStream = new PrintStream(err, true, StandardCharsets.UTF_8);
         e.printStackTrace(errPrintStream);
-        textChannel.sendMessage(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + err.toString().split("\n")[0] + "\n```").build()).queue();
+        textChannel.sendMessageEmbeds(EmbedUtils.embedMessageWithTitle("An error has occurred!", "```Java\n" + err.toString().split("\n")[0] + "\n```").build()).queue();
     }
     public List<String> getAliases() {
         return Collections.singletonList("eval");

@@ -2,16 +2,16 @@ package xyz.hurrhnn.discordbot.cmd;
 
 import me.duncte123.botcommons.commands.ICommandContext;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.List;
 
 public class CmdContext implements ICommandContext {
 
-    private final GuildMessageReceivedEvent event;
+    private final MessageReceivedEvent event;
     private final List<String> args;
 
-    public CmdContext(GuildMessageReceivedEvent event, List<String> args) {
+    public CmdContext(MessageReceivedEvent event, List<String> args) {
         this.event = event;
         this.args = args;
     }
@@ -22,7 +22,7 @@ public class CmdContext implements ICommandContext {
     }
 
     @Override
-    public GuildMessageReceivedEvent getEvent() {
+    public MessageReceivedEvent getEvent() {
         return this.event;
     }
 
